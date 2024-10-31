@@ -59,7 +59,7 @@ if __name__ == "__main__":
                           "GOOG",
                           "AMZN",
                           "META",
-                          "BRK/B",
+                          "BRK-B",
                           "LLY",
                           "AVGO",
                           "TSLA",
@@ -72,6 +72,7 @@ if __name__ == "__main__":
                           "MA",
                           "HD",
                           "PG",
-                          "COST",], 
-                          "us", (2021, 1), "./data/us_stock/")
+                          "COST",
+                          "SPX"], 
+                          "us", (2014, 1), "./data/us_stock/")
     loader.run()

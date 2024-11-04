@@ -6,6 +6,11 @@ import pandas as pd
 from typing import Optional, List
 from utils import *
 from base_strategy import *
+import matplotlib.pyplot as plt
+from io import BytesIO
+import matplotlib
+
+matplotlib.use('Agg')
 
 class AITrader:
     """
@@ -37,7 +42,7 @@ class AITrader:
         if os.path.exists(log_file):
             os.remove(log_file)
         self.log_handle = open(log_file,"a")
-        self.log("AITrader initialized with starting cash: ${:,}".format(self.cash))    
+        self.log("--- AITrader initialization ---")    
 
     def log(self, txt: str) -> None:
         """
@@ -95,6 +100,7 @@ class AITrader:
         self.cerebro.addanalyzer(bt.analyzers.DrawDown, _name="DrawDown")
         self.cerebro.addanalyzer(bt.analyzers.Returns, _name="Returns")
         self.log("Analyzers added.")
+        self.log("\n--- Backtesting ---")
 
     def add_broker(self) -> None:
         """
@@ -118,18 +124,40 @@ class AITrader:
         """
         self.log(f"Ending value: {round(self.cerebro.broker.getvalue())}")
 
+        # Extract performance metrics
         returns = result[0].analyzers.Returns.get_analysis()
-        self.log(f"Total Returns: {round(returns['rtot'], 2)}")
-        self.log(f"Normalized Returns: {round(returns['rnorm'], 2)}")
+        total_return = round(returns['rtot'], 2)
+        annualized_return = round(returns['rnorm'], 2)
+        sharpe_ratio = result[0].analyzers.SharpeRatio.get_analysis().get("sharperatio")
+        max_drawdown = result[0].analyzers.DrawDown.get_analysis().get("max", {}).get("drawdown")
 
-        sharpe = result[0].analyzers.SharpeRatio.get_analysis().get("sharperatio")
-        if sharpe:
-            self.log(f"Sharpe Ratio: {round(sharpe, 2)}")
-        drawdown = (
-            result[0].analyzers.DrawDown.get_analysis().get("max", {}).get("drawdown")
-        )
-        if drawdown:
-            self.log(f"Max Drawdown: {round(drawdown, 2)}")
+        # Log the metrics
+        self.log(f"Total Returns: {total_return}")
+        self.log(f"Annualized Returns: {annualized_return}")
+        if sharpe_ratio:
+            self.log(f"Sharpe Ratio: {round(sharpe_ratio, 2)}")
+        if max_drawdown:
+            self.log(f"Max Drawdown: {round(max_drawdown, 2)}%")
+
+         # Evaluate based on metrics
+        self.log("\n--- Strategy Evaluation ---")
+        if total_return > 0:
+            self.log("Total Returns are positive, indicating a profitable strategy.")
+        else:
+            self.log("Total Returns are negative, indicating a loss.")
+
+        if sharpe_ratio:
+            if sharpe_ratio > 1:
+                self.log("Good risk-adjusted returns (Sharpe Ratio > 1), indicating a potentially effective strategy.")
+            elif sharpe_ratio > 2:
+                self.log("Excellent risk-adjusted returns (Sharpe Ratio > 2).")
+            else:
+                self.log("Low risk-adjusted returns, suggesting that risk might not be well compensated.")
+
+        if max_drawdown and max_drawdown > 20:
+            self.log("High maximum drawdown (> 20%), which may indicate high risk.")
+        else:
+            self.log("Max Drawdown is within acceptable limits (< 20%), suggesting a stable strategy.")
 
     def run(self, sigle_stock=1, stock_ticker="AAPL") -> None:
         """
@@ -154,7 +182,7 @@ class AITrader:
         Plots the results of the backtest.
         """
         self.cerebro.plot()
-
+        
     def __del__(self):
         """
         Ensures the log file is closed when the instance is destroyed.

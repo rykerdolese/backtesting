@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 from io import BytesIO
 from datetime import datetime
+import matplotlib
 from trader import AITrader
 from base_strategy import *
 from strategy import (
@@ -10,6 +11,8 @@ from strategy import (
     BollingerBands, Momentum, NaiveeRSI,
     RsiBollingerBands, NaiveRateOfChange, ROCMovingAverage
 )
+
+matplotlib.use("Agg")
 
 
 # Streamlit UI for setting up the backtest
@@ -78,4 +81,7 @@ if st.sidebar.button("Run Backtest"):
     st.text_area("Log File Content", log_content, height=400)
 
     
+
+    st.write("### Backtest Plot")
+    # st.image(trader.plot(), use_column_width=True)
 

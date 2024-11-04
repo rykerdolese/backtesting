@@ -12,4 +12,4 @@ if __name__ == "__main__":
     trader.run(1, stock_ticker="AAPL")
 
     # # Plot the results
-    # trader.plot()
+    trader.plot()

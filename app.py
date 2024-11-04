@@ -30,9 +30,15 @@ strategies = {
 
 # Sidebar for selecting the strategy and other parameters
 selected_strategy = st.sidebar.selectbox("Choose Strategy", list(strategies.keys()))
-start_date = st.sidebar.date_input("Start Date", datetime(2020, 1, 1))
-end_date = st.sidebar.date_input("End Date", datetime(2021, 1, 1))
-print(type(selected_strategy))
+# Define the minimum and maximum date range
+min_date = datetime(2014, 1, 1)
+max_date = datetime(2024, 10, 31)
+
+# Date inputs with limited range
+start_date = st.sidebar.date_input("Start Date", datetime(2020, 1, 1), 
+                                   min_value=min_date, max_value=max_date)
+end_date = st.sidebar.date_input("End Date", datetime(2021, 1, 1), 
+                                 min_value=min_date, max_value=max_date)
 
 # Define list of stock tickers
 available_stocks = [

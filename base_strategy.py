@@ -1,5 +1,8 @@
 import backtrader as bt
 
+
+# Define the log file path
+
 class BaseStrategy(bt.Strategy):
     """
     This class logs events such as orders and trades .
@@ -11,8 +14,12 @@ class BaseStrategy(bt.Strategy):
         Log the provided text with a timestamp.
         """
         dt = dt or self.datas[0].datetime.date(0)
-        print(f"{dt.isoformat()}, {txt}")
-
+        log_message = f"{dt.isoformat()}, {txt}"
+        print(log_message)
+        file = open("trading_log.txt", "a") # log file
+        file.write(log_message + '\n')
+        file.flush()
+    
     def notify_order(self, order):
         """
         Handle order notifications.

@@ -17,8 +17,8 @@ class AITrader:
         strategy: Optional[BaseStrategy] = None,
         cash: int = 1000000, # starting cash balance
         commission: float = 0.001425, # Commission rate for trades
-        start_date: Optional[str] = None,
-        end_date: Optional[str] = None,
+        start_date: str = None,
+        end_date: str = None,
         data_dir: Optional[str] = "./data/us_stock/",
     ):
         """
@@ -32,11 +32,20 @@ class AITrader:
         self.data_dir = data_dir
         self.cerebro = bt.Cerebro() # backtrader engine
 
+        # Open the log file in write mode and store the file handle
+        log_file = "trading_log.txt"
+        if os.path.exists(log_file):
+            os.remove(log_file)
+        self.log_handle = open(log_file,"a")
+        self.log("AITrader initialized with starting cash: ${:,}".format(self.cash))    
+
     def log(self, txt: str) -> None:
         """
         Logs a message to the console.
         """
         print(txt)
+        self.log_handle.write(txt + '\n')
+        self.log_handle.flush()  # Ensure the message is written to the file immediately
 
     def add_strategy(self, strategy: BaseStrategy) -> None:
         """
@@ -76,6 +85,7 @@ class AITrader:
                 plot=False
             )
             self.cerebro.adddata(data, name=ticker)
+            self.log(f"Loaded data for ticker: {ticker}")
 
     def add_analyzers(self) -> None:
         """
@@ -115,7 +125,6 @@ class AITrader:
         sharpe = result[0].analyzers.SharpeRatio.get_analysis().get("sharperatio")
         if sharpe:
             self.log(f"Sharpe Ratio: {round(sharpe, 2)}")
-
         drawdown = (
             result[0].analyzers.DrawDown.get_analysis().get("max", {}).get("drawdown")
         )
@@ -145,3 +154,9 @@ class AITrader:
         Plots the results of the backtest.
         """
         self.cerebro.plot()
+
+    def __del__(self):
+        """
+        Ensures the log file is closed when the instance is destroyed.
+        """
+        self.log_handle.close()

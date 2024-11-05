@@ -63,8 +63,7 @@ single_stock = st.sidebar.checkbox("Single Stock", value=True)
 
 # Button to start the backtest
 if st.sidebar.button("Run Backtest"):
-    # Define the log file path
-    log_file_path = "backtest_log.txt"
+    
 
     # Initialize the AITrader with the selected dates
     trader = AITrader(start_date=start_date, end_date=end_date)
@@ -78,7 +77,9 @@ if st.sidebar.button("Run Backtest"):
 
     # Display log contents in Streamlit
     st.write("### Backtest Results")
-    log_file_path = "trading_log.txt"
+    
+    # open the log file path
+    log_file_path = "./log/trading_log.txt"
     with open(log_file_path, "r") as file:
         log_content = file.read()
     

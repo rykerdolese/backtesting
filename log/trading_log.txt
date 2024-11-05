@@ -1,0 +1,38 @@
+--- AITrader initialization ---
+Strategy added.
+Data loaded.
+Starting Value: 1000000
+Sizer set to 95%.
+Analyzers added.
+
+--- Backtesting ---
+2020-02-14, [BUY] EXECUTED at Price: 81.18      | Total Cost: 949619.83  | Commision: 1353.21   
+2020-02-24, [SELL] EXECUTED at Price: 74.32      | Total Cost: 949619.83  | Commision: 1238.70   
+2020-02-24, [OPERATION PROFIT] Gross: -80358.24  | Net: -82950.15 
+2020-04-09, [BUY] EXECUTED at Price: 67.18      | Total Cost: 879808.83  | Commision: 1253.73   
+2020-09-09, [SELL] EXECUTED at Price: 117.26     | Total Cost: 879808.83  | Commision: 2188.49   
+2020-09-09, [OPERATION PROFIT] Gross: 655976.51  | Net: 652534.29 
+2020-09-10, [BUY] EXECUTED at Price: 120.36     | Total Cost: 1529742.51 | Commision: 2179.88   
+2020-09-11, [SELL] EXECUTED at Price: 114.57     | Total Cost: 1529742.51 | Commision: 2075.02   
+2020-09-11, [OPERATION PROFIT] Gross: -73589.32  | Net: -77844.22 
+2020-10-12, [BUY] EXECUTED at Price: 120.06     | Total Cost: 1454589.85 | Commision: 2072.79   
+2020-10-29, [SELL] EXECUTED at Price: 112.37     | Total Cost: 1454589.85 | Commision: 1940.03   
+2020-10-29, [OPERATION PROFIT] Gross: -93168.32  | Net: -97181.14 
+2020-10-30, [BUY] EXECUTED at Price: 111.06     | Total Cost: 1275890.66 | Commision: 1818.14   
+2020-11-02, [SELL] EXECUTED at Price: 109.11     | Total Cost: 1275890.66 | Commision: 1786.22   
+2020-11-02, [OPERATION PROFIT] Gross: -22402.15  | Net: -26006.52 
+2020-11-06, [BUY] EXECUTED at Price: 118.32     | Total Cost: 1292369.57 | Commision: 1841.63   
+2020-11-11, [SELL] EXECUTED at Price: 117.19     | Total Cost: 1292369.57 | Commision: 1824.04   
+2020-11-11, [OPERATION PROFIT] Gross: -12342.58  | Net: -16008.25 
+2020-11-12, [BUY] EXECUTED at Price: 119.62     | Total Cost: 1286314.81 | Commision: 1833.00   
+2020-11-24, [SELL] EXECUTED at Price: 113.91     | Total Cost: 1286314.81 | Commision: 1745.50   
+2020-11-24, [OPERATION PROFIT] Gross: -61401.57  | Net: -64980.07 
+2020-11-30, [BUY] EXECUTED at Price: 116.97     | Total Cost: 1227172.52 | Commision: 1748.72   
+Ending value: 1450739
+Total Returns: 0.37
+Annualized Returns: 0.45
+Max Drawdown: 28.2%
+
+--- Strategy Evaluation ---
+Total Returns are positive, indicating a profitable strategy.
+High maximum drawdown (> 20%), which may indicate high risk.

@@ -4,11 +4,10 @@ import os
 import backtrader as bt
 import pandas as pd
 from typing import Optional, List
+import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 from trading.utils import *
 from trading.base_strategy import *
-import matplotlib.pyplot as plt
-import matplotlib
-import plotly.graph_objects as go
 
 
 class AITrader:
@@ -24,6 +23,7 @@ class AITrader:
         start_date: str = None,
         end_date: str = None,
         data_dir: Optional[str] = "./data/us_stock/",
+        log_file: str = "./log/trading_log.txt"
     ):
         """
         Initializes the AITrader with the given parameters.
@@ -34,13 +34,13 @@ class AITrader:
         self.end_date = end_date
         self.strategy = strategy
         self.data_dir = data_dir
+        self.log_file = log_file
         self.cerebro = bt.Cerebro() # backtrader engine
 
         # Open the log file in write mode and store the file handle
-        log_file = "trading_log.txt"
-        if os.path.exists(log_file):
-            os.remove(log_file)
-        self.log_handle = open(log_file,"a")
+        if os.path.exists(self.log_file):
+            os.remove(self.log_file)
+        self.log_handle = open(self.log_file,"a")
         self.log("--- AITrader initialization ---")    
 
     def log(self, txt: str) -> None:

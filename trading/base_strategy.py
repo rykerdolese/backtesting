@@ -16,7 +16,9 @@ class BaseStrategy(bt.Strategy):
         dt = dt or self.datas[0].datetime.date(0)
         log_message = f"{dt.isoformat()}, {txt}"
         print(log_message)
-        file = open("trading_log.txt", "a") # log file
+
+        # write into log file
+        file = open("./log/trading_log.txt", "a") # log file
         file.write(log_message + '\n')
         file.flush()
     

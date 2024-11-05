@@ -1,44 +1,15 @@
 --- AITrader initialization ---
-Strategy 'NaiveMovingAverage' added with parameters: {'sma_period': 20}
+Strategy 'MLTradingStrategy' added without parameters.
 Data loaded.
 Starting Value: 1000000
 Sizer set to 95%.
 Analyzers added.
 
 --- Backtesting ---
-2024-01-31, [BUY] EXECUTED at Price: 187.04     | Total Cost: 944947.88  | Commision: 1346.55   
-2024-02-01, [SELL] EXECUTED at Price: 183.99     | Total Cost: 944947.88  | Commision: 1324.59   
-2024-02-01, [OPERATION PROFIT] Gross: -15408.89  | Net: -18080.04 
-2024-02-07, [BUY] EXECUTED at Price: 190.64     | Total Cost: 939427.14  | Commision: 1338.68   
-2024-02-09, [SELL] EXECUTED at Price: 188.65     | Total Cost: 939427.14  | Commision: 1324.71   
-2024-02-09, [OPERATION PROFIT] Gross: -9806.26   | Net: -12469.65 
-2024-03-20, [BUY] EXECUTED at Price: 175.72     | Total Cost: 919094.83  | Commision: 1309.71   
-2024-03-22, [SELL] EXECUTED at Price: 171.76     | Total Cost: 919094.83  | Commision: 1280.19   
-2024-03-22, [OPERATION PROFIT] Gross: -20712.62  | Net: -23302.53 
-2024-03-28, [BUY] EXECUTED at Price: 171.75     | Total Cost: 890749.76  | Commision: 1269.32   
-2024-04-01, [SELL] EXECUTED at Price: 171.19     | Total Cost: 890749.76  | Commision: 1265.18   
-2024-04-01, [OPERATION PROFIT] Gross: -2904.32   | Net: -5438.82  
-2024-04-12, [BUY] EXECUTED at Price: 174.26     | Total Cost: 889691.20  | Commision: 1267.81   
-2024-04-17, [SELL] EXECUTED at Price: 169.61     | Total Cost: 889691.20  | Commision: 1233.98   
-2024-04-17, [OPERATION PROFIT] Gross: -23740.73  | Net: -26242.51 
-2024-04-26, [BUY] EXECUTED at Price: 169.88     | Total Cost: 868692.02  | Commision: 1237.89   
-2024-04-29, [SELL] EXECUTED at Price: 173.37     | Total Cost: 868692.02  | Commision: 1263.32   
-2024-04-29, [OPERATION PROFIT] Gross: 17846.28   | Net: 15345.08  
-2024-04-30, [BUY] EXECUTED at Price: 173.33     | Total Cost: 882455.46  | Commision: 1257.50   
-2024-05-02, [SELL] EXECUTED at Price: 172.51     | Total Cost: 882455.46  | Commision: 1251.55   
-2024-05-02, [OPERATION PROFIT] Gross: -4174.81   | Net: -6683.86  
-2024-05-03, [] Order placement failed - status: Margin
-2024-05-06, [BUY] EXECUTED at Price: 182.35     | Total Cost: 872045.56  | Commision: 1242.66   
-2024-07-25, [SELL] EXECUTED at Price: 218.93     | Total Cost: 872045.56  | Commision: 1491.95   
-2024-07-25, [OPERATION PROFIT] Gross: 174935.09  | Net: 172200.48 
-2024-08-14, [BUY] EXECUTED at Price: 220.57     | Total Cost: 1037269.88 | Commision: 1478.11   
-2024-09-05, [SELL] EXECUTED at Price: 221.63     | Total Cost: 1037269.88 | Commision: 1485.21   
-2024-09-05, [OPERATION PROFIT] Gross: 4984.83    | Net: 2021.51   
-2024-09-20, [BUY] EXECUTED at Price: 229.97     | Total Cost: 1047492.60 | Commision: 1492.68   
-Ending value: 1078731
-Total Returns: 0.08
-Annualized Returns: 0.11
-Max Drawdown: 9.2%
+Ending value: 1985869
+Total Returns: 0.69
+Annualized Returns: 0.98
+Max Drawdown: 18.63%
 
 --- Strategy Evaluation ---
 Total Returns are positive, indicating a profitable strategy.

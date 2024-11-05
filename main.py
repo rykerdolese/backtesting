@@ -2,7 +2,7 @@ from trading.strategy import *
 from trading.trader import *
 
 if __name__ == "__main__":
-    # Initialize the AITrader with default settings
+    # Initialize the AITrader
     trader = AITrader(start_date="2020-01-01", end_date="2021-01-01")
 
     # Set your desired strategy; for example, using the BuyHoldStrategy

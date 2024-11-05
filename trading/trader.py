@@ -4,8 +4,8 @@ import os
 import backtrader as bt
 import pandas as pd
 from typing import Optional, List
-from utils import *
-from base_strategy import *
+from trading.utils import *
+from trading.base_strategy import *
 import matplotlib.pyplot as plt
 import matplotlib
 import plotly.graph_objects as go

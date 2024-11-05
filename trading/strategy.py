@@ -1,4 +1,4 @@
-from base_strategy import *
+from trading.base_strategy import *
 
 ## BuyHold
 class BuyHold(BaseStrategy):

@@ -1,5 +1,5 @@
-from strategy import *
-from trader import *
+from trading.strategy import *
+from trading.trader import *
 
 if __name__ == "__main__":
     # Initialize the AITrader with default settings
@@ -12,4 +12,4 @@ if __name__ == "__main__":
     trader.run(1, stock_ticker="AAPL")
 
     # # Plot the results
-    trader.plot()
+    # trader.plot()

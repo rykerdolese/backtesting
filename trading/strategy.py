@@ -37,7 +37,7 @@ class NaiveMovingAverage(BaseStrategy):
 
 class CrossMovingAverage(BaseStrategy):
      # Parameter for the moving average period
-    params = dict(fast=5, slow=37)  # Default period of 30 days
+    params = dict(fast=5, slow=37)  # Default period of 5, 37 days
     def __init__(self):
         self.fast_sma = bt.indicators.SMA(
             self.data.close, 

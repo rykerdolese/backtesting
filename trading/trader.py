@@ -51,13 +51,17 @@ class AITrader:
         self.log_handle.write(txt + '\n')
         self.log_handle.flush()  # Ensure the message is written to the file immediately
 
-    def add_strategy(self, strategy: BaseStrategy) -> None:
+    def add_strategy(self, strategy: BaseStrategy, params: Optional[dict] = None) -> None:
         """
         Adds a trading strategy to the cerebro instance.
         """
         self.strategy = strategy
-        self.cerebro.addstrategy(strategy)
-        self.log("Strategy added.")
+        if params:
+            self.cerebro.addstrategy(strategy, **params)
+            self.log(f"Strategy '{strategy.__name__}' added with parameters: {params}")
+        else:
+            self.cerebro.addstrategy(strategy)
+            self.log(f"Strategy '{strategy.__name__}' added without parameters.")
 
     def add_one_stock(self, df: Optional[pd.DataFrame] = None) -> None:
         """

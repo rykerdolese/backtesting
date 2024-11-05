@@ -1,24 +1,16 @@
 --- AITrader initialization ---
-Strategy added.
+Strategy 'BuyHold' added without parameters.
 Data loaded.
 Starting Value: 1000000
 Sizer set to 95%.
 Analyzers added.
 
 --- Backtesting ---
-2020-04-16, [BUY] EXECUTED at Price: 71.85      | Total Cost: 959853.08  | Commision: 1367.79   
-2020-07-24, [SELL] EXECUTED at Price: 90.99      | Total Cost: 959853.08  | Commision: 1732.23   
-2020-07-24, [OPERATION PROFIT] Gross: 255744.85  | Net: 252644.84 
-2020-10-13, [BUY] EXECUTED at Price: 125.27     | Total Cost: 1198334.98 | Commision: 1707.63   
-2020-10-20, [SELL] EXECUTED at Price: 116.20     | Total Cost: 1198334.98 | Commision: 1583.99   
-2020-10-20, [OPERATION PROFIT] Gross: -86763.78  | Net: -90055.39 
-2020-11-17, [BUY] EXECUTED at Price: 119.55     | Total Cost: 1097574.31 | Commision: 1564.04   
-2020-11-24, [SELL] EXECUTED at Price: 113.91     | Total Cost: 1097574.31 | Commision: 1490.26   
-2020-11-24, [OPERATION PROFIT] Gross: -51780.16  | Net: -54834.46 
-Ending value: 1107755
-Total Returns: 0.1
-Annualized Returns: 0.11
-Max Drawdown: 18.12%
+2024-01-03, [BUY] EXECUTED at Price: 184.22     | Total Cost: 942733.26  | Commision: 1343.39   
+Ending value: 1213538
+Total Returns: 0.19
+Annualized Returns: 0.29
+Max Drawdown: 14.64%
 
 --- Strategy Evaluation ---
 Total Returns are positive, indicating a profitable strategy.

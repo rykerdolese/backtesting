@@ -12,6 +12,7 @@ from strategy import (
     RsiBollingerBands, NaiveRateOfChange, ROCMovingAverage
 )
 
+
 def show_backtesting_page():
     st.title("Backtesting Page")
     # Streamlit UI for setting up the backtest
@@ -78,5 +79,8 @@ def show_backtesting_page():
             log_content = file.read()
         
         st.text_area("Log File Content", log_content, height=400)
-
         
+        st.write("### Backtest Plot")
+        st.pyplot(trader.plot())
+
+    

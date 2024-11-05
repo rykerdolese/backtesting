@@ -23,6 +23,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import sys
 
+import sys
 
 try:
     import matplotlib
@@ -30,14 +31,30 @@ except ImportError:
     raise ImportError(
         'Matplotlib seems to be missing. Needed for plotting support')
 else:
-    touse = 'TKAgg' if sys.platform != 'darwin' else 'MacOSX'
+    # Set a stable backend compatible with Streamlit and non-GUI environments
+    touse = 'Agg'  # Use the non-interactive 'Agg' backend on all platforms
     try:
         matplotlib.use(touse)
     except:
-        # if another backend has already been loaded, an exception will be
-        # generated and this can be skipped
+        # If another backend has already been loaded, this exception can be ignored
         pass
-
 
 from .plot import Plot, Plot_OldSync
 from .scheme import PlotScheme
+# try:
+#     import matplotlib
+# except ImportError:
+#     raise ImportError(
+#         'Matplotlib seems to be missing. Needed for plotting support')
+# else:
+#     touse = 'TKAgg' if sys.platform != 'darwin' else 'MacOSX'
+#     try:
+#         matplotlib.use(touse)
+#     except:
+#         # if another backend has already been loaded, an exception will be
+#         # generated and this can be skipped
+#         pass
+
+
+# from .plot import Plot, Plot_OldSync
+# from .scheme import PlotScheme

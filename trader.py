@@ -7,10 +7,9 @@ from typing import Optional, List
 from utils import *
 from base_strategy import *
 import matplotlib.pyplot as plt
-from io import BytesIO
 import matplotlib
+import plotly.graph_objects as go
 
-matplotlib.use('Agg')
 
 class AITrader:
     """
@@ -181,10 +180,51 @@ class AITrader:
         """
         Plots the results of the backtest.
         """
-        self.cerebro.plot()
-        
+        # self.cerebro.plot()
+        figs = self.cerebro.plot(iplot=False)
+        figure = figs[0][0]  # Access the first figure from the nested list
+        return figure
+    
     def __del__(self):
         """
         Ensures the log file is closed when the instance is destroyed.
         """
         self.log_handle.close()
+
+    
+    def capture_backtest_data(self) -> dict:
+        """
+        Runs the backtest and captures data, indicators, portfolio values, cash balance,
+        and buy/sell signals for each stock.
+        """
+        captured_data = {
+            'portfolio_value': [],
+            'cash': [],
+            'buy_signals': [],
+            'sell_signals': [],
+            'ohlc_data': []
+        }
+
+        # Run the backtest
+        result = self.cerebro.run()
+
+        # Capture OHLC data for each stock
+        for data in self.cerebro.datas:
+            ohlc_data = pd.DataFrame({
+                'Date': data.datetime.array,
+                'Open': data.open.array,
+                'High': data.high.array,
+                'Low': data.low.array,
+                'Close': data.close.array,
+                'Volume': data.volume.array,
+            })
+            ohlc_data['Date'] = pd.to_datetime(ohlc_data['Date'], unit='s')
+            captured_data['ohlc_data'].append({'ticker': data._name, 'data': ohlc_data})
+
+        # Capture portfolio values and cash balance at each step
+        for i in range(len(self.cerebro.datas[0].datetime.array)):
+            captured_data['portfolio_value'].append(self.cerebro.broker.getvalue())
+            captured_data['cash'].append(self.cerebro.broker.getcash())
+
+        print(captured_data["buy_signals"])
+        return captured_data

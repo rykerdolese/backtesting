@@ -90,3 +90,25 @@
   - This strategy combines momentum (ROC) with moving average crossover to increase signal strength.
 
 ---
+### Summary Table
+
+| Strategy Type                | Typical Date Range    |
+|------------------------------|-----------------------|
+| Medium-Term (e.g., swing)    | 2-3 years            |
+| Long-Term (e.g., buy & hold) | 5-10+ years          |
+| Short-Term (e.g., day trade) | 1-2 years (recent)   |
+| Machine Learning Models      | Rolling 3 months to 1 year |
+| Special Cases (e.g., event-driven) | Targeted event periods |
+
+
+| Strategy                      | Typical Period Range             | Label           |
+|-------------------------------|----------------------------------|-----------------|
+| Buy and Hold                  | 5 years or more                  | Long-Term       |
+| Naive Moving Average (SMA)    | 3 months to 1 year               | Medium-Term     |
+| Cross Moving Average          | 6 months to 2 years              | Medium- to Long-Term |
+| Bollinger Bands               | 1 week to 6 months               | Short- to Medium-Term |
+| Momentum                      | 1 month to 1 year                | Medium-Term     |
+| Naive RSI                     | 1 week to 6 months               | Short- to Medium-Term |
+| RSI Bollinger Bands           | 2 weeks to 6 months              | Short- to Medium-Term |
+| Naive Rate of Change (ROC)    | 2 weeks to 3 months              | Short-Term      |
+| ROC Moving Average            | 1-3 months                       | Medium-Term     |

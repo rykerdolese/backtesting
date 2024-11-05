@@ -1,0 +1,17 @@
+--- AITrader initialization ---
+Strategy added.
+Data loaded.
+Starting Value: 1000000
+Sizer set to 95%.
+Analyzers added.
+
+--- Backtesting ---
+2020-01-03, [BUY] EXECUTED at Price: 74.29      | Total Cost: 939878.44  | Commision: 1339.33   
+Ending value: 1737564
+Total Returns: 0.55
+Annualized Returns: 0.73
+Max Drawdown: 29.74%
+
+--- Strategy Evaluation ---
+Total Returns are positive, indicating a profitable strategy.
+High maximum drawdown (> 20%), which may indicate high risk.

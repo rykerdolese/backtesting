@@ -20,6 +20,8 @@ st.set_page_config(
 # Title of the page
 st.title("Backtesting Page")
 
+st.write("##### Set the Configuration to run the backtest.")
+
 # Sidebar for AI Trader Configuration
 st.sidebar.title("AI Trader Configuration")
 
@@ -84,7 +86,7 @@ available_stocks = [
     "AAPL", "MSFT", "NVDA", "GOOG", "AMZN", "META",
     "BRK-B", "LLY", "AVGO", "TSLA", "WMT", "JPM", 
     "V", "UNH", "XOM", "ORCL", "MA", "HD", "PG", 
-    "COST", "SPX"
+    "COST", "^SPX"
 ]
 
 # Dropdown menu for selecting a stock ticker

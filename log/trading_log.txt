@@ -1,26 +1,17 @@
 --- AITrader initialization ---
-Strategy 'NaiveMovingAverage' added with parameters: {'sma_period': 30}
+Strategy 'BuyHold' added without parameters.
 Data loaded.
 Starting Value: 1000000
 Sizer set to 95%.
 Analyzers added.
 
 --- Backtesting ---
-2024-08-16, [BUY] EXECUTED at Price: 223.92     | Total Cost: 946618.00  | Commision: 1348.93   
-2024-09-05, [SELL] EXECUTED at Price: 221.63     | Total Cost: 946618.00  | Commision: 1335.14   
-2024-09-05, [OPERATION PROFIT] Gross: -9680.91   | Net: -12364.97 
-2024-09-06, [BUY] EXECUTED at Price: 223.95     | Total Cost: 944877.30  | Commision: 1346.45   
-2024-09-09, [SELL] EXECUTED at Price: 220.82     | Total Cost: 944877.30  | Commision: 1327.63   
-2024-09-09, [OPERATION PROFIT] Gross: -13205.88  | Net: -15879.96 
-2024-09-12, [BUY] EXECUTED at Price: 222.50     | Total Cost: 922503.92  | Commision: 1314.57   
-2024-09-17, [SELL] EXECUTED at Price: 215.75     | Total Cost: 922503.92  | Commision: 1274.69   
-2024-09-17, [OPERATION PROFIT] Gross: -27986.07  | Net: -30575.33 
-2024-09-20, [BUY] EXECUTED at Price: 229.97     | Total Cost: 898418.12  | Commision: 1280.25   
-Ending value: 925210
-Total Returns: -0.08
-Annualized Returns: -0.26
-Max Drawdown: 9.6%
+2024-01-03, [BUY] EXECUTED at Price: 184.22     | Total Cost: 942733.26  | Commision: 1343.39   
+Ending value: 1213538
+Total Returns: 0.19
+Annualized Returns: 0.29
+Max Drawdown: 14.64%
 
 --- Strategy Evaluation ---
-Total Returns are negative, indicating a loss.
+Total Returns are positive, indicating a profitable strategy.
 Max Drawdown is within acceptable limits (< 20%), suggesting a stable strategy.

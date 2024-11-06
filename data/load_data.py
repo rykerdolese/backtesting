@@ -31,6 +31,7 @@ class StockLoader(object):
         try:
             if self.market == "us":
                 start = f"{self.start_ym[0]:04d}-{self.start_ym[1]:02d}-01"
+                print(start)
                 df = yf.download(stock_id, start=start)
                 df = df.reset_index()                
             else:
@@ -73,6 +74,6 @@ if __name__ == "__main__":
                           "HD",
                           "PG",
                           "COST",
-                          "SPX"], 
+                          "^SPX"], 
                           "us", (2014, 1), "./data/us_stock/")
     loader.run()

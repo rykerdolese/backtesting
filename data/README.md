@@ -13,7 +13,7 @@ This repository includes data loading and processing scripts for financial analy
 ## Data Sources
 
 1. **Stock Data**: Stock data is fetched using the `yfinance` library, which provides historical data for various tickers.
-2. **Sentiment Data**: Sentiment data is sourced from CNN's Fear & Greed Index, available [here](https://www.cnn.com/markets/fear-and-greed).
+2. **Sentiment Data**: Sentiment data is sourced from CNN's Fear & Greed Index, available [here](https://www.cnn.com/markets/fear-and-greed). For the api: [api_link](https://production.dataviz.cnn.io/index/fearandgreed/graphdata).
 
 ## Usage
 

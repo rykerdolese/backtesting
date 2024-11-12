@@ -218,3 +218,41 @@ class ROCMovingAverage(BaseStrategy):
         if self.position.size > 0:
             if close_signal:
                 self.close()
+
+
+## Fear and Greed 
+class FearGreedStrategy(bt.Strategy):
+    def __init__(self):
+        self.feargreed = self.datas[0].feargreed
+
+    def next(self):
+        if not self.position:
+            if self.feargreed[0] < 20:
+                self.buy()
+        else:
+            if self.feargreed[0] > 60:
+                self.sell()
+
+## Put Call
+class PutCallStrategy(bt.Strategy):
+    def __init__(self):
+        self.putcall = self.datas[0].putcall
+
+    def next(self):
+        if self.putcall[0] > 1 and not self.position:
+            self.buy()
+        if self.putcall[0] < 0.45 and self.position.size > 0:
+            self.sell()
+
+
+## VIX
+class VIXStrategy(bt.Strategy):
+
+    def __init__(self):
+        self.vix = self.datas[0].vix
+
+    def next(self):
+        if self.vix[0] > 35 and not self.position:
+            self.buy()
+        if self.vix[0] < 10 and self.position.size > 0:
+            self.sell()

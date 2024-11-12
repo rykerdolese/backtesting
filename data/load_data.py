@@ -1,8 +1,11 @@
-from tqdm import tqdm
 import os
+import requests
 import pandas as pd
 import yfinance as yf
+from tqdm import tqdm
 from typing import List, Literal, Tuple
+from datetime import datetime
+from fake_useragent import UserAgent
 
 
 class StockLoader(object):
@@ -53,8 +56,66 @@ class StockLoader(object):
 
         self.log("Finished all runs.")
 
+
+def fetch_market_sentiment_data(start_date='2020-09-21', file_path = "./data/sentiment/"):
+    """
+    Fetches and combines Fear and Greed, put-call ratio, and VIX data from the API and local CSVs.
+    """
+    # Constants
+    BASE_URL = "https://production.dataviz.cnn.io/index/fearandgreed/graphdata/"
+    ua = UserAgent()
+    headers = {'User-Agent': ua.random}
+    
+    # Fetch Fear and Greed data from CNN's API
+    response = requests.get(BASE_URL + start_date, headers=headers)
+    data = response.json()
+    
+    # Load and prepare Fear and Greed data from CSV
+    fng_data = pd.read_csv(file_path+'fear-greed.csv', usecols=['Date', 'Fear Greed'])
+    fng_data['Date'] = pd.to_datetime(fng_data['Date'], format='%Y-%m-%d')
+    fng_data.set_index('Date', inplace=True)
+    fng_data.sort_index(inplace=True)
+    
+    # Load and prepare put-call ratio data from CSV
+    putcall_data = pd.read_csv(file_path+'put-call.csv', usecols=['Date', 'Put Call'])
+    putcall_data['Date'] = pd.to_datetime(putcall_data['Date'], format='%Y-%m-%d')
+    putcall_data.set_index('Date', inplace=True)
+    putcall_data.sort_index(inplace=True)
+    
+    # Load and prepare VIX data from CSV
+    vix_data = pd.read_csv(file_path+'vix.csv', usecols=['Date', 'VIX'])
+    vix_data['Date'] = pd.to_datetime(vix_data['Date'], format='%Y-%m-%d')
+    vix_data.set_index('Date', inplace=True)
+    vix_data.sort_index(inplace=True)
+    
+    # Update Fear and Greed data with the latest values from the API
+    for entry in data.get('fear_and_greed_historical', {}).get('data', []):
+        date = datetime.utcfromtimestamp(entry['x'] / 1000).strftime('%Y-%m-%d')
+        fear_greed_value = int(entry['y'])
+        fng_data.at[date, 'Fear Greed'] = fear_greed_value
+    
+    # Update put-call ratio data with the latest values if available
+    if 'put_call_options' in data:
+        for entry in data['put_call_options']['data']:
+            date = datetime.utcfromtimestamp(entry['x'] / 1000).strftime('%Y-%m-%d')
+            put_call_value = round(entry['y'], 2)
+            putcall_data.at[date, 'Put Call'] = put_call_value
+    
+    # Update VIX data with the latest values if available
+    if 'market_volatility_vix' in data:
+        for entry in data['market_volatility_vix']['data']:
+            date = datetime.utcfromtimestamp(entry['x'] / 1000).strftime('%Y-%m-%d')
+            vix_value = entry['y']
+            vix_data.at[date, 'VIX'] = vix_value
+    
+    # Combine the datasets, aligning on the Date index
+    combined_data = pd.concat([fng_data, putcall_data, vix_data], axis=1)
+    
+    combined_data.to_csv(file_path+"sentiment.csv")
+    return combined_data
+
 if __name__ == "__main__":
-    loader = StockLoader(["AAPL", 
+    stock_loader = StockLoader(["AAPL", 
                           "MSFT",
                           "NVDA",
                           "GOOG",
@@ -76,4 +137,6 @@ if __name__ == "__main__":
                           "COST",
                           "^SPX"], 
                           "us", (2014, 1), "./data/us_stock/")
-    loader.run()
+    stock_loader.run()
+
+    fetch_market_sentiment_data()

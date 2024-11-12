@@ -68,11 +68,16 @@ class AITrader:
         Loads classic test data into the cerebro instance.
         """
         df = df[self.start_date : self.end_date]
-        feed = bt.feeds.PandasData(
-            dataname=df,
-            openinterest=None,
-            timeframe=bt.TimeFrame.Days,
-        )
+        # feed = bt.feeds.PandasData(
+        #     dataname=df,
+        #     openinterest=None,
+        #     timeframe=bt.TimeFrame.Days,
+        # )
+        feed = PandasData_Customized(
+                dataname=df,
+                openinterest=None,
+                timeframe=bt.TimeFrame.Days,
+            )
         self.cerebro.adddata(feed)
         self.log("Data loaded.")
 
@@ -86,10 +91,17 @@ class AITrader:
             df = pd.read_csv(file, parse_dates=[date_col], index_col=[date_col])
             df = df[self.start_date : self.end_date]
             ticker = extract_ticker_from_path(file)
-            data = bt.feeds.PandasData(
-                dataname=df, 
-                name=ticker, 
-                timeframe=bt.TimeFrame.Days, 
+            # data = bt.feeds.PandasData(
+            #     dataname=df, 
+            #     name=ticker, 
+            #     timeframe=bt.TimeFrame.Days, 
+            #     plot=False
+            # )
+            # Initialize the custom data feed
+            data = PandasData_Customized(
+                dataname=df,
+                name=ticker,
+                timeframe=bt.TimeFrame.Days,
                 plot=False
             )
             self.cerebro.adddata(data, name=ticker)
@@ -168,7 +180,9 @@ class AITrader:
         """
         if self.strategy:
             if sigle_stock == 1:
-                df = pd.read_csv(f"data/us_stock/{stock_ticker}.csv", parse_dates=["Date"], index_col="Date")
+                df = pd.read_csv(self.data_dir + f"all_{stock_ticker}.csv", 
+                                 parse_dates=["Date"], 
+                                 index_col="Date")
                 self.add_one_stock(df) 
             else:
                 self.add_stocks()

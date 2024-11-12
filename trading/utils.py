@@ -1,6 +1,13 @@
 import re
 import backtrader as bt
 
+class PandasData_Customized(bt.feeds.PandasData):
+    lines = ('feargreed', 'putcall', 'vix')
+    params = (('feargreed', -3),
+              ('putcall', -2),
+              ('vix', -1),
+              )  # Position of the 'fear_greed' column in df
+
 # Useful when working with multiple files (e.g., AAPL.csv or TSLA.csv) to get the ticker.
 def extract_ticker_from_path(file_path: str) -> str:
     """
@@ -25,7 +32,15 @@ def calculate_indicators_bt(data):
     """
     indicators = {}
     
+    indicators["Open"] = data.open
+    indicators["High"] = data.high
+    indicators["Low"] = data.low
+    indicators["Volume"] = data.volume
     indicators["Close"] = data.close
+
+    # Votatility
+    indicators["Price_Change"] = data.close - data.open
+    indicators["Votatility"] = (data.high - data.low) / data.low
 
     # Simple Moving Averages (SMA)
     indicators['SMA_10'] = bt.indicators.SimpleMovingAverage(data.close, period=10)
@@ -87,6 +102,10 @@ def calculate_indicators_df(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
     - pd.DataFrame: DataFrame with new columns for various technical indicators.
     """
+    # Votatility
+    df["Price_Change"] = df["Close"] - df["Open"]
+    df["Votatility"] = (df["High"] - df["Low"]) / df["Low"]
+
     # Simple Moving Averages (SMA)
     df['SMA_10'] = df['Close'].rolling(window=10).mean()
     df['SMA_50'] = df['Close'].rolling(window=50).mean()

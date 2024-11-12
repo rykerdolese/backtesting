@@ -6,7 +6,7 @@ if __name__ == "__main__":
     trader = AITrader(start_date="2023-01-01", end_date="2024-11-11")
 
     # Set your desired strategy; for example, using the BuyHoldStrategy
-    trader.add_strategy(VIXStrategy)
+    trader.add_strategy(VIX)
 
     # Run the backtest
     trader.run(1, stock_ticker="TSLA")

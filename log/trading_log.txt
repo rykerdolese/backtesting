@@ -1,15 +1,15 @@
 --- AITrader initialization ---
-Strategy 'VIXStrategy' added without parameters.
+Strategy 'VIX' added without parameters.
 Data loaded.
 Starting Value: 1000000
 Sizer set to 95%.
 Analyzers added.
 
 --- Backtesting ---
-Ending value: 1711563
-Total Returns: 0.54
-Annualized Returns: 0.34
-Sharpe Ratio: 0.97
+Ending value: 1233172
+Total Returns: 0.21
+Annualized Returns: 0.12
+Sharpe Ratio: 0.91
 Max Drawdown: 17.77%
 
 --- Strategy Evaluation ---

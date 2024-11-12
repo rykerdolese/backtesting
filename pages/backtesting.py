@@ -5,7 +5,8 @@ from trading.base_strategy import *
 from trading.strategy import (
     BuyHold, NaiveMovingAverage, CrossMovingAverage,
     BollingerBands, Momentum, NaiveeRSI,
-    RsiBollingerBands, NaiveRateOfChange, ROCMovingAverage
+    RsiBollingerBands, NaiveRateOfChange, ROCMovingAverage,
+    FearGreed, PutCall, VIX
 )
 import mpld3
 import streamlit.components.v1 as components
@@ -36,6 +37,9 @@ strategies = {
     "RSI with Bollinger Bands": (RsiBollingerBands, {"rsi_period": 14, "bb_period": 20, "bb_dev": 2, "oversold": 30, "overbought": 70}),
     "Naive Rate of Change (ROC)": (NaiveRateOfChange, {"period": 20, "threshold": 0.08}),
     "ROC with Moving Average": (ROCMovingAverage, {"roc_period": 12, "fast_ma_period": 10, "slow_ma_period": 30}),
+    "FearGreed": (FearGreed, {}),
+    "PutCall": (PutCall, {}),
+    "Volatility Index": (VIX, {}),
 }
 
 # Sidebar for selecting the strategy and other parameters

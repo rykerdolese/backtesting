@@ -10,13 +10,13 @@ This project is an AI trading application that allows for backtesting different 
 ## Installation
 Clone this repository and install the required dependencies:
 
-- For Mac:<br>
+###  For Mac:<br>
 
-Run this first
+- Run this first
 ```bash
 brew intsall ta-lib
 ```
-Then
+- Then
 ```bash
 pip install -r requirements.txt
 ```

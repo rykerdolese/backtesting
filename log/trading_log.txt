@@ -1,18 +1,17 @@
 --- AITrader initialization ---
-Strategy 'VIX' added without parameters.
+Strategy 'BuyHold' added without parameters.
 Data loaded.
 Starting Value: 1000000
 Sizer set to 95%.
 Analyzers added.
 
 --- Backtesting ---
-Ending value: 1233172
-Total Returns: 0.21
-Annualized Returns: 0.12
-Sharpe Ratio: 0.91
-Max Drawdown: 17.77%
+2024-01-03, [BUY] EXECUTED at Price: 184.22     | Total Cost: 942733.26  | Commision: 1343.39   
+Ending value: 1213538
+Total Returns: 0.19
+Annualized Returns: 0.29
+Max Drawdown: 14.64%
 
 --- Strategy Evaluation ---
 Total Returns are positive, indicating a profitable strategy.
-Low risk-adjusted returns, suggesting that risk might not be well compensated.
 Max Drawdown is within acceptable limits (< 20%), suggesting a stable strategy.

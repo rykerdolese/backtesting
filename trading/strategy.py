@@ -221,7 +221,7 @@ class ROCMovingAverage(BaseStrategy):
 
 
 ## Fear and Greed 
-class FearGreed(bt.Strategy):
+class FearGreed(BaseStrategy):
     def __init__(self):
         self.feargreed = self.datas[0].feargreed
 
@@ -234,7 +234,7 @@ class FearGreed(bt.Strategy):
                 self.sell()
 
 ## Put Call
-class PutCall(bt.Strategy):
+class PutCall(BaseStrategy):
     def __init__(self):
         self.putcall = self.datas[0].putcall
 
@@ -246,7 +246,7 @@ class PutCall(bt.Strategy):
 
 
 ## VIX
-class VIX(bt.Strategy):
+class VIX(BaseStrategy):
     def __init__(self):
         self.vix = self.datas[0].vix
 

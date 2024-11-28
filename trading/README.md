@@ -1,5 +1,3 @@
-Here’s an updated **README** that includes all the trading strategies, categorized and structured for clarity:
-
 ---
 
 # Trading Strategies

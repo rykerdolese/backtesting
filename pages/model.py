@@ -36,39 +36,65 @@ end_date = st.date_input("Training Data End Date", datetime(2024, 10, 1), min_va
 available_models = ["Logistic Regression", "Gradient Boosting", "RNN"]
 selected_model = st.selectbox("Select Training Model", available_models)
 
-# Placeholder for training status
-training_status = st.empty()
+
 
 # Button to start training
 if st.button("Start training"):
+    # Placeholder for training status
+    training_status = st.empty()
+
     # Load data
     data = pd.read_csv(f"./data/us_stock/all_{stock_ticker}.csv", parse_dates=["Date"], index_col="Date")
     data = data.loc[start_date:end_date]
 
-    # Feature engineering for traditional models
     if selected_model in ["Logistic Regression", "Gradient Boosting"]:
-        data = calculate_indicators_df(data)
-        data['Target'] = (data['Close'].shift(-1) > data['Close']).astype(int)
-        selected_features = ['Close', 'SMA_10', 'SMA_50', 'Momentum', 'RSI', 'MACD', 'BB_Middle', 'BB_Upper', 'BB_Lower']
-        X = data[selected_features]
-        y = data['Target']
+        progress_bar = st.progress(0)  # Initialize progress bar
+        status_text = st.empty()  # Placeholder for status updates
 
-        # Scale features
-        scaler = StandardScaler()
-        X = scaler.fit_transform(X)
-        scaler_file_path = f"./model/{stock_ticker}_scaler.pkl"
-        joblib.dump(scaler, scaler_file_path)
+        # Step 1: Feature Engineering
+        try:
+            status_text.text("Calculating indicators and creating features...")
+            data = calculate_indicators_df(data)
+            progress_bar.progress(20)  # Update progress to 20%
 
-        # Train model
-        if selected_model == "Logistic Regression":
-            model = LogisticRegression()
-        elif selected_model == "Gradient Boosting":
-            model = GradientBoostingClassifier()
+            data['Target'] = (data['Close'].shift(-1) > data['Close']).astype(int)
+            selected_features = ['Close', 'SMA_10', 'SMA_50', 'Momentum', 'RSI', 'MACD', 'BB_Middle', 'BB_Upper', 'BB_Lower']
+            X = data[selected_features]
+            y = data['Target']
 
-        model.fit(X, y)
-        model_file_path = f"./model/{stock_ticker}_{selected_model.replace(' ', '_')}_model.pkl"
-        joblib.dump(model, model_file_path)
-        training_status.success(f"{selected_model} model trained and saved for {stock_ticker}!")
+            # Step 2: Scale Features
+            status_text.text("Scaling features...")
+            scaler = StandardScaler()
+            X = scaler.fit_transform(X)
+            scaler_file_path = f"./model/{stock_ticker}_scaler.pkl"
+            joblib.dump(scaler, scaler_file_path)
+            progress_bar.progress(50)  # Update progress to 50%
+
+            # Step 3: Train Model
+            status_text.text(f"Training {selected_model} model...")
+            if selected_model == "Logistic Regression":
+                model = LogisticRegression()
+            elif selected_model == "Gradient Boosting":
+                model = GradientBoostingClassifier()
+
+            model.fit(X, y)
+            progress_bar.progress(80)  # Update progress to 80%
+
+            # Step 4: Save Model
+            status_text.text(f"Saving {selected_model} model...")
+            model_file_path = f"./model/{stock_ticker}_{selected_model.replace(' ', '_')}_model.pkl"
+            joblib.dump(model, model_file_path)
+            progress_bar.progress(100)  # Update progress to 100%
+
+            # Completion
+            progress_bar.empty()
+            status_text.text("")
+            training_status.success(f"{selected_model} model trained and saved for {stock_ticker}!")
+
+        except Exception as e:
+            progress_bar.empty()
+            st.error(f"An error occurred: {e}")
+
 
     # Training RNN model
     elif selected_model == "RNN":
@@ -145,9 +171,22 @@ if st.button("Start training"):
             Returns:
                 history: Training history.
             """
-            history = model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, verbose=1)
+            progress_bar = st.progress(0)  # Initialize progress bar
+            status_text = st.empty()  # Placeholder for status text
+            total_steps = epochs
+
+            for epoch in range(epochs):
+                history = model.fit(X_train, y_train, epochs=1, batch_size=batch_size, verbose=0)
+                current_loss = history.history['loss'][-1]
+                
+                # Update progress bar and status text
+                progress_bar.progress((epoch + 1) / total_steps)
+                status_text.text(f"Epoch {epoch + 1}/{epochs}, Loss: {current_loss:.4f}")
             
+            progress_bar.empty()  # Clear progress bar
+            status_text.text("Training Complete!")  # Final status
             return history
+
 
         # Function to make predictions
         def predict_rnn(model, X_data, scaler):
@@ -166,25 +205,28 @@ if st.button("Start training"):
             predictions = scaler.inverse_transform(predictions)
             return predictions
         
+        try:
+            training_status.info("Training started...")
+            # Prepare the dataset
+            time_step = 50
+            X_data, scaler = prepare_dataset(data, time_step)
 
-        # Prepare the dataset
-        time_step = 50
-        X_data, scaler = prepare_dataset(data, time_step)
+            # Build the RNN model
+            rnn_model = build_rnn((X_data.shape[1], 1))
 
-        # Build the RNN model
-        rnn_model = build_rnn((X_data.shape[1], 1))
+            # Train the model on the entire dataset
+            X_train = X_data[:-1]
+            y_train = data['Open'].values[time_step:len(data) - 1].reshape(-1, 1)
+            y_train = scaler.fit_transform(y_train)  # Scale target values
+            train_rnn(rnn_model, X_train, y_train)
 
-        # Train the model on the entire dataset
-        X_train = X_data[:-1]
-        y_train = data['Open'].values[time_step:len(data) - 1].reshape(-1, 1)
-        y_train = scaler.fit_transform(y_train)  # Scale target values
-        train_rnn(rnn_model, X_train, y_train)
+            # Make predictions on the entire dataset
+            predictions = predict_rnn(rnn_model, X_data, scaler)
 
-        # Make predictions on the entire dataset
-        predictions = predict_rnn(rnn_model, X_data, scaler)
-
-        # Add predictions to the dataset
-        data['predictions'] = np.nan
-        data.iloc[time_step:, data.columns.get_loc('predictions')] = predictions.flatten()
-        data.to_csv(f"./data/us_stock/predictions/{stock_ticker}.csv")
-        training_status.success(f"RNN model trained and saved for {stock_ticker}!")
+            # Add predictions to the dataset
+            data['predictions'] = np.nan
+            data.iloc[time_step:, data.columns.get_loc('predictions')] = predictions.flatten()
+            data.to_csv(f"./data/us_stock/predictions/{stock_ticker}.csv")
+            training_status.success(f"RNN model trained and saved for {stock_ticker}!")
+        except Exception as e:
+            st.error(f"An error occurred: {e}")

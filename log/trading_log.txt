@@ -1,46 +1,17 @@
 --- AITrader initialization ---
-Strategy 'RNNStrategy' added without parameters.
+Strategy 'MLTradingStrategy' added with parameters: {'model_name': 'Gradient_Boosting', 'stock_ticker': 'AAPL'}
 Data loaded.
 Starting Value: 1000000
 Sizer set to 95%.
 Analyzers added.
 
 --- Backtesting ---
-2024-01-02, BUY CREATE 370.87
-2024-01-03, [BUY] EXECUTED at Price: 369.01     | Total Cost: 945235.56  | Commision: 1346.96   
-2024-05-22, SELL CREATE 430.52
-2024-05-23, [SELL] EXECUTED at Price: 432.97     | Total Cost: 945235.56  | Commision: 1580.43   
-2024-05-23, [OPERATION PROFIT] Gross: 163836.36  | Net: 160908.98 
-2024-05-23, BUY CREATE 427.00
-2024-05-24, [BUY] EXECUTED at Price: 427.19     | Total Cost: 1103354.27 | Commision: 1572.28   
-2024-05-24, SELL CREATE 430.16
-2024-05-28, [SELL] EXECUTED at Price: 429.63     | Total Cost: 1103354.27 | Commision: 1581.26   
-2024-05-28, [OPERATION PROFIT] Gross: 6302.08    | Net: 3148.54   
-2024-05-29, BUY CREATE 429.17
-2024-05-30, [BUY] EXECUTED at Price: 424.30     | Total Cost: 1093305.91 | Commision: 1557.96   
-2024-06-11, SELL CREATE 432.68
-2024-06-12, [SELL] EXECUTED at Price: 435.32     | Total Cost: 1093305.91 | Commision: 1598.42   
-2024-06-12, [OPERATION PROFIT] Gross: 28395.60   | Net: 25239.21  
-2024-07-24, BUY CREATE 428.90
-2024-07-25, [BUY] EXECUTED at Price: 428.80     | Total Cost: 1129568.46 | Commision: 1609.64   
-2024-09-13, SELL CREATE 430.59
-2024-09-16, [SELL] EXECUTED at Price: 430.60     | Total Cost: 1129568.46 | Commision: 1616.39   
-2024-09-16, [OPERATION PROFIT] Gross: 4741.71    | Net: 1515.68   
-2024-09-24, BUY CREATE 429.17
-2024-09-25, [BUY] EXECUTED at Price: 429.83     | Total Cost: 1133011.45 | Commision: 1614.54   
-2024-09-25, SELL CREATE 432.11
-2024-09-26, [SELL] EXECUTED at Price: 435.09     | Total Cost: 1133011.45 | Commision: 1634.30   
-2024-09-26, [OPERATION PROFIT] Gross: 13865.14   | Net: 10616.30  
-2024-09-27, BUY CREATE 428.02
-2024-09-30, [BUY] EXECUTED at Price: 428.21     | Total Cost: 1141863.93 | Commision: 1627.16   
-2024-09-30, SELL CREATE 430.30
-2024-10-01, [SELL] EXECUTED at Price: 428.45     | Total Cost: 1141863.93 | Commision: 1628.07   
-2024-10-01, [OPERATION PROFIT] Gross: 640.04     | Net: -2615.19  
-2024-10-01, BUY CREATE 420.69
-Ending value: 1198814
-Total Returns: 0.18
-Annualized Returns: 0.27
-Max Drawdown: 8.89%
+2024-03-13, BUY CREATE 171.13
+2024-03-14, [BUY] EXECUTED at Price: 172.91     | Total Cost: 959881.37  | Commision: 1367.83   
+Ending value: 1294518
+Total Returns: 0.26
+Annualized Returns: 0.41
+Max Drawdown: 11.41%
 
 --- Strategy Evaluation ---
 Total Returns are positive, indicating a profitable strategy.

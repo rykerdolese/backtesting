@@ -1,11 +1,14 @@
 import re
 import backtrader as bt
+import pandas as pd
+import numpy as np
 
 class PandasData_Customized(bt.feeds.PandasData):
-    lines = ('feargreed', 'putcall', 'vix')
-    params = (('feargreed', -3),
-              ('putcall', -2),
-              ('vix', -1),
+    lines = ('feargreed', 'putcall', 'vix', 'predictions')
+    params = (('feargreed', -4),
+              ('putcall', -3),
+              ('vix', -2),
+              ('predictions', -1),
               )  # Position of the 'fear_greed' column in df
 
 # Useful when working with multiple files (e.g., AAPL.csv or TSLA.csv) to get the ticker.
@@ -50,9 +53,9 @@ def calculate_indicators_bt(data):
     indicators['Momentum'] = data.close - data.close(-10)
     
     
-    # Exponential Moving Averages (EMA)
-    indicators['EMA_10'] = bt.indicators.ExponentialMovingAverage(data.close, period=10)
-    indicators['EMA_50'] = bt.indicators.ExponentialMovingAverage(data.close, period=50)
+    # # Exponential Moving Averages (EMA)
+    # indicators['EMA_10'] = bt.indicators.ExponentialMovingAverage(data.close, period=10)
+    # indicators['EMA_50'] = bt.indicators.ExponentialMovingAverage(data.close, period=50)
     
     # Relative Strength Index (RSI)
     indicators['RSI'] = bt.indicators.RelativeStrengthIndex(data.close, period=14)
@@ -60,37 +63,35 @@ def calculate_indicators_bt(data):
     # Moving Average Convergence Divergence (MACD)
     macd = bt.indicators.MACD(data.close)
     indicators['MACD'] = macd.macd
-    indicators['MACD_Signal'] = macd.signal
+    # indicators['MACD_Signal'] = macd.signal
     
     # Bollinger Bands
     bb = bt.indicators.BollingerBands(data.close, period=20, devfactor=2)
+    indicators['BB_Middle'] = bb.lines.mid
     indicators['BB_Upper'] = bb.lines.top
     indicators['BB_Lower'] = bb.lines.bot
     
-    # Average True Range (ATR)
-    indicators['ATR'] = bt.indicators.AverageTrueRange(data, period=14)
+    # # Average True Range (ATR)
+    # indicators['ATR'] = bt.indicators.AverageTrueRange(data, period=14)
     
-    # Rate of Change (ROC)
-    indicators['ROC'] = bt.indicators.RateOfChange(data.close, period=10)
+    # # Rate of Change (ROC)
+    # indicators['ROC'] = bt.indicators.RateOfChange(data.close, period=10)
     
-    # Stochastic Oscillator
-    stoch = bt.indicators.Stochastic(data, period=14)
-    indicators['Stochastic'] = stoch.percD  # Or use stoch.percK for %K line
+    # # Stochastic Oscillator
+    # stoch = bt.indicators.Stochastic(data, period=14)
+    # indicators['Stochastic'] = stoch.percD  # Or use stoch.percK for %K line
     
-    # Lagged values (previous closing values)
-    indicators['Lag_1'] = data.close(-1)
-    indicators['Lag_5'] = data.close(-5)
-    indicators['Lag_10'] = data.close(-10)
+    # # Lagged values (previous closing values)
+    # indicators['Lag_1'] = data.close(-1)
+    # indicators['Lag_5'] = data.close(-5)
+    # indicators['Lag_10'] = data.close(-10)
     
-    # Rolling Standard Deviation
-    indicators['Rolling_Std_10'] = bt.indicators.StandardDeviation(data.close, period=10)
-    indicators['Rolling_Std_30'] = bt.indicators.StandardDeviation(data.close, period=30)
+    # # Rolling Standard Deviation
+    # indicators['Rolling_Std_10'] = bt.indicators.StandardDeviation(data.close, period=10)
+    # indicators['Rolling_Std_30'] = bt.indicators.StandardDeviation(data.close, period=30)
     
     return indicators
 
-
-import pandas as pd
-import numpy as np
 
 def calculate_indicators_df(df: pd.DataFrame) -> pd.DataFrame:
     """

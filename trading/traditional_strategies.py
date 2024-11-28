@@ -1,4 +1,8 @@
 from trading.base_strategy import *
+from trading.utils import *
+import joblib
+import warnings
+warnings.filterwarnings("ignore")
 
 ## BuyHold
 class BuyHold(BaseStrategy):
@@ -227,10 +231,10 @@ class FearGreed(BaseStrategy):
 
     def next(self):
         if not self.position:
-            if self.feargreed[0] < 20:
+            if self.feargreed[0] < 30:
                 self.buy()
         else:
-            if self.feargreed[0] > 60:
+            if self.feargreed[0] > 70:
                 self.sell()
 
 ## Put Call
@@ -255,3 +259,4 @@ class VIX(BaseStrategy):
             self.buy()
         if self.vix[0] < 10 and self.position.size > 0:
             self.sell()
+

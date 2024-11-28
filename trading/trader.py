@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from trading.utils import *
 from trading.base_strategy import *
-
+from trading.traditional_strategies import *
+from trading.ai_strategies import *
 
 class AITrader:
     """
@@ -51,17 +52,25 @@ class AITrader:
         self.log_handle.write(txt + '\n')
         self.log_handle.flush()  # Ensure the message is written to the file immediately
 
-    def add_strategy(self, strategy: BaseStrategy, params: Optional[dict] = None) -> None:
+    def add_strategy(self, strategy: BaseStrategy, params: Optional[dict] = None, model=None) -> None:
         """
         Adds a trading strategy to the cerebro instance.
         """
         self.strategy = strategy
         if params:
-            self.cerebro.addstrategy(strategy, **params)
-            self.log(f"Strategy '{strategy.__name__}' added with parameters: {params}")
+            if model:
+                self.cerebro.addstrategy(strategy, model=model, **params)
+                self.log(f"Strategy '{strategy.__name__}' added with model and parameters: {params}")
+            else:
+                self.cerebro.addstrategy(strategy, **params)
+                self.log(f"Strategy '{strategy.__name__}' added with parameters: {params}")
         else:
-            self.cerebro.addstrategy(strategy)
-            self.log(f"Strategy '{strategy.__name__}' added without parameters.")
+            if model:
+                self.cerebro.addstrategy(strategy, model=model)
+                self.log(f"Strategy '{strategy.__name__}' added with model.")
+            else:
+                self.cerebro.addstrategy(strategy)
+                self.log(f"Strategy '{strategy.__name__}' added without parameters.")
 
     def add_one_stock(self, df: Optional[pd.DataFrame] = None) -> None:
         """
@@ -158,8 +167,10 @@ class AITrader:
         self.log("\n--- Strategy Evaluation ---")
         if total_return > 0:
             self.log("Total Returns are positive, indicating a profitable strategy.")
-        else:
+        elif total_return < 0:
             self.log("Total Returns are negative, indicating a loss.")
+        else:
+            self.log("No Returns.")
 
         if sharpe_ratio:
             if sharpe_ratio > 1:
@@ -179,13 +190,22 @@ class AITrader:
         Runs the backtest with the specified data type and sizer.
         """
         if self.strategy:
-            if sigle_stock == 1:
-                df = pd.read_csv(self.data_dir + f"all_{stock_ticker}.csv", 
-                                 parse_dates=["Date"], 
-                                 index_col="Date")
-                self.add_one_stock(df) 
+            if self.strategy != RNNStrategy:
+                if sigle_stock == 1:
+                    data = pd.read_csv(self.data_dir + f"all_{stock_ticker}.csv", 
+                                    parse_dates=["Date"], 
+                                    index_col="Date")
+                    self.add_one_stock(data) 
+                else:
+                    self.add_stocks()
             else:
-                self.add_stocks()
+                if sigle_stock == 1:
+                    data = pd.read_csv(self.data_dir + f"predictions/{stock_ticker}.csv", 
+                                    parse_dates=["Date"], 
+                                    index_col="Date")
+                    self.add_one_stock(data) 
+                else:
+                    self.add_stocks()
             self.add_broker()
             self.add_sizer()
             self.add_analyzers()

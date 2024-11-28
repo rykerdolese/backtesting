@@ -1,40 +1,190 @@
+# Import necessary libraries
 import streamlit as st
+import pandas as pd
+import numpy as np
 from datetime import datetime
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import GradientBoostingClassifier
+import joblib
+from keras.models import Sequential
+from keras.layers import Dense, SimpleRNN, Dropout
+from trading.utils import *
+from trading.trader import *
+from trading.traditional_strategies import *
+from trading.ai_strategies import *
+import warnings
+warnings.filterwarnings("ignore")
 
+# Streamlit page configuration
+st.set_page_config(page_title="Model Training Page", page_icon="💡")
 
-# page config
-st.set_page_config(
-    page_title="Model",
-    page_icon="💡",
-)
+# Page title
+st.title("AI Model Training Page")
 
-# content only for backtesting page
-# Title of the page
-st.title("AI model training Page")
-
-
-# Define list of stock tickers
-available_stocks = [
-    "AAPL", "MSFT", "NVDA", "GOOG", "AMZN", "META",
-    "BRK-B", "LLY", "AVGO", "TSLA", "WMT", "JPM", 
-    "V", "UNH", "XOM", "ORCL", "MA", "HD", "PG", 
-    "COST", "^SPX"
-]
-# Dropdown menu for selecting a stock ticker
+# Stock selection
+available_stocks = ["AAPL", "MSFT", "NVDA", "GOOG", "AMZN", "META", "^SPX"]
 stock_ticker = st.selectbox("Select Training Stock Data", available_stocks)
 
-# Define the minimum and maximum date range for backtesting
+# Date range for training data
 min_date = datetime(2014, 1, 1)
 max_date = datetime(2024, 10, 31)
+start_date = st.date_input("Training Data Start Date", datetime(2014, 1, 1), min_value=min_date, max_value=max_date)
+end_date = st.date_input("Training Data End Date", datetime(2024, 10, 1), min_value=min_date, max_value=max_date)
 
-# Date inputs with limited range
-start_date = st.date_input("Traning Data Start Date", datetime(2024, 1, 1), min_value=min_date, max_value=max_date)
-end_date = st.date_input("Traning Data End Date", datetime(2024, 10, 1), min_value=min_date, max_value=max_date)
+# Model selection
+available_models = ["Logistic Regression", "Gradient Boosting", "RNN"]
+selected_model = st.selectbox("Select Training Model", available_models)
 
-# Selected which model we want to train
-available_models = ["Logistic regression", "Gradient boosting"]
-model = st.selectbox("Select Training Stock Data", available_models)
+# Placeholder for training status
+training_status = st.empty()
 
-# Button to start the training
+# Button to start training
 if st.button("Start training"):
-    pass
+    # Load data
+    data = pd.read_csv(f"./data/us_stock/all_{stock_ticker}.csv", parse_dates=["Date"], index_col="Date")
+    data = data.loc[start_date:end_date]
+
+    # Feature engineering for traditional models
+    if selected_model in ["Logistic Regression", "Gradient Boosting"]:
+        data = calculate_indicators_df(data)
+        data['Target'] = (data['Close'].shift(-1) > data['Close']).astype(int)
+        selected_features = ['Close', 'SMA_10', 'SMA_50', 'Momentum', 'RSI', 'MACD', 'BB_Middle', 'BB_Upper', 'BB_Lower']
+        X = data[selected_features]
+        y = data['Target']
+
+        # Scale features
+        scaler = StandardScaler()
+        X = scaler.fit_transform(X)
+        scaler_file_path = f"./model/{stock_ticker}_scaler.pkl"
+        joblib.dump(scaler, scaler_file_path)
+
+        # Train model
+        if selected_model == "Logistic Regression":
+            model = LogisticRegression()
+        elif selected_model == "Gradient Boosting":
+            model = GradientBoostingClassifier()
+
+        model.fit(X, y)
+        model_file_path = f"./model/{stock_ticker}_{selected_model.replace(' ', '_')}_model.pkl"
+        joblib.dump(model, model_file_path)
+        training_status.success(f"{selected_model} model trained and saved for {stock_ticker}!")
+
+    # Training RNN model
+    elif selected_model == "RNN":
+        # Function to prepare the dataset for RNN
+        def prepare_dataset(data: pd.DataFrame, time_step: int = 50):
+            """
+            Prepare dataset for testing using the whole data.
+
+            Args:
+                data (pd.DataFrame): Stock data with 'Open' column.
+                time_step (int): Number of timesteps for input sequences.
+
+            Returns:
+                X_data, scaler: Prepared input data and scaler.
+            """
+            dataset = data['Open'].values.reshape(-1, 1)
+            scaler = MinMaxScaler(feature_range=(0, 1))
+            dataset_scaled = scaler.fit_transform(dataset)
+
+            # Prepare the entire dataset for testing
+            X_data = []
+            for i in range(time_step, len(dataset_scaled)):
+                X_data.append(dataset_scaled[i - time_step:i, 0])
+
+            # Convert to array
+            X_data = np.array(X_data)
+
+            # Reshape for RNN input
+            X_data = np.reshape(X_data, (X_data.shape[0], X_data.shape[1], 1))
+
+            return X_data, scaler
+
+        # Function to build the RNN model
+        def build_rnn(input_shape):
+            """
+            Build an RNN model.
+
+            Args:
+                input_shape (tuple): Shape of the input data.
+
+            Returns:
+                model: Compiled RNN model.
+            """
+            model = Sequential()
+            model.add(SimpleRNN(units=50, activation="tanh", return_sequences=True, input_shape=input_shape))
+            model.add(Dropout(0.2))
+            model.add(SimpleRNN(units=50, activation="tanh", return_sequences=True))
+            model.add(Dropout(0.2))
+            model.add(SimpleRNN(units=50, activation="tanh", return_sequences=True))
+            model.add(Dropout(0.2))
+            model.add(SimpleRNN(units=50, activation="tanh", return_sequences=True))
+            model.add(Dropout(0.2))
+            model.add(SimpleRNN(units=50, activation="tanh", return_sequences=True))
+            model.add(Dropout(0.2))
+            model.add(SimpleRNN(units=50))
+            model.add(Dropout(0.2))
+            model.add(Dense(units=1))
+
+            model.compile(optimizer="adam", loss="mean_squared_error")
+            return model
+
+        # Function to train the RNN model
+        def train_rnn(model, X_train, y_train, epochs=50, batch_size=32):
+            """
+            Train the RNN model.
+
+            Args:
+                model: RNN model.
+                X_train: Training input data.
+                y_train: Training target data.
+                epochs (int): Number of epochs.
+                batch_size (int): Batch size.
+
+            Returns:
+                history: Training history.
+            """
+            history = model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, verbose=1)
+            
+            return history
+
+        # Function to make predictions
+        def predict_rnn(model, X_data, scaler):
+            """
+            Make predictions using the trained RNN model.
+
+            Args:
+                model: Trained RNN model.
+                X_data: Input data for predictions.
+                scaler: Fitted MinMaxScaler.
+
+            Returns:
+                predictions: Predicted values (scaled back to original range).
+            """
+            predictions = model.predict(X_data)
+            predictions = scaler.inverse_transform(predictions)
+            return predictions
+        
+
+        # Prepare the dataset
+        time_step = 50
+        X_data, scaler = prepare_dataset(data, time_step)
+
+        # Build the RNN model
+        rnn_model = build_rnn((X_data.shape[1], 1))
+
+        # Train the model on the entire dataset
+        X_train = X_data[:-1]
+        y_train = data['Open'].values[time_step:len(data) - 1].reshape(-1, 1)
+        y_train = scaler.fit_transform(y_train)  # Scale target values
+        train_rnn(rnn_model, X_train, y_train)
+
+        # Make predictions on the entire dataset
+        predictions = predict_rnn(rnn_model, X_data, scaler)
+
+        # Add predictions to the dataset
+        data['predictions'] = np.nan
+        data.iloc[time_step:, data.columns.get_loc('predictions')] = predictions.flatten()
+        data.to_csv(f"./data/us_stock/predictions/{stock_ticker}.csv")
+        training_status.success(f"RNN model trained and saved for {stock_ticker}!")

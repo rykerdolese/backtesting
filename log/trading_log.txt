@@ -1,18 +1,15 @@
 --- AITrader initialization ---
-Strategy 'MLTradingStrategy' added with parameters: {'model_name': 'Gradient_Boosting', 'stock_ticker': 'AAPL'}
+Strategy 'PutCall' added without parameters.
 Data loaded.
 Starting Value: 1000000
 Sizer set to 95%.
 Analyzers added.
 
 --- Backtesting ---
-2024-03-13, BUY CREATE 171.13
-2024-03-14, [BUY] EXECUTED at Price: 172.91     | Total Cost: 959881.37  | Commision: 1367.83   
-Ending value: 1294518
-Total Returns: 0.26
-Annualized Returns: 0.41
-Max Drawdown: 11.41%
+Ending value: 1000000
+Total Returns: 0.0
+Annualized Returns: 0.0
 
 --- Strategy Evaluation ---
-Total Returns are positive, indicating a profitable strategy.
+No Returns.
 Max Drawdown is within acceptable limits (< 20%), suggesting a stable strategy.

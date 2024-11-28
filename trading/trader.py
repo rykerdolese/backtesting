@@ -11,6 +11,14 @@ from trading.base_strategy import *
 from trading.traditional_strategies import *
 from trading.ai_strategies import *
 
+class PandasData_Customized(bt.feeds.PandasData):
+    lines = ('feargreed', 'putcall', 'vix', 'predictions')
+    params = (('feargreed', -4),
+              ('putcall', -3),
+              ('vix', -2),
+              ('predictions', -1),
+              )  # Position of the 'fear_greed' column in df
+
 class AITrader:
     """
     AITrader is a wrapper for Backtrader functions, designed to accelerate the strategy development process.

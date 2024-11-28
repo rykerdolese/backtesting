@@ -3,14 +3,6 @@ import backtrader as bt
 import pandas as pd
 import numpy as np
 
-class PandasData_Customized(bt.feeds.PandasData):
-    lines = ('feargreed', 'putcall', 'vix', 'predictions')
-    params = (('feargreed', -4),
-              ('putcall', -3),
-              ('vix', -2),
-              ('predictions', -1),
-              )  # Position of the 'fear_greed' column in df
-
 # Useful when working with multiple files (e.g., AAPL.csv or TSLA.csv) to get the ticker.
 def extract_ticker_from_path(file_path: str) -> str:
     """

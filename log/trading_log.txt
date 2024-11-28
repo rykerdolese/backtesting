@@ -1,17 +1,26 @@
 --- AITrader initialization ---
-Strategy 'BuyHold' added without parameters.
+Strategy 'RNNStrategy' added without parameters.
 Data loaded.
 Starting Value: 1000000
 Sizer set to 95%.
 Analyzers added.
 
 --- Backtesting ---
+2024-01-02, BUY CREATE 185.64
 2024-01-03, [BUY] EXECUTED at Price: 184.22     | Total Cost: 942733.26  | Commision: 1343.39   
+2024-05-03, SELL CREATE 183.38
+2024-05-06, [SELL] EXECUTED at Price: 182.35     | Total Cost: 942733.26  | Commision: 1329.76   
+2024-05-06, [OPERATION PROFIT] Gross: -9569.57   | Net: -12242.73 
+2024-05-10, BUY CREATE 183.05
+2024-05-13, [BUY] EXECUTED at Price: 185.44     | Total Cost: 950621.27  | Commision: 1354.64   
+2024-06-11, SELL CREATE 207.15
+2024-06-12, [SELL] EXECUTED at Price: 207.37     | Total Cost: 950621.27  | Commision: 1514.83   
+2024-06-12, [OPERATION PROFIT] Gross: 112419.74  | Net: 109550.27 
 
 ---Result Analysis---
-Ending Value: 1213538
-Total Returns (%): 19.35
-Annualized Returns (%): 29.44
+Ending Value: 1097308
+Total Returns (%): 9.29
+Annualized Returns (%): 13.18
 Max Drawdown (%): 14.64
 
 --- Strategy Evaluation ---

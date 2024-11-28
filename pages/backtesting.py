@@ -28,6 +28,16 @@ st.write("##### Set the Configuration to run the backtest.")
 # Sidebar for AI Trader Configuration
 st.sidebar.title("AI Trader Configuration")
 
+# Initial Cash Input
+initial_cash = st.sidebar.number_input("Initial Cash ($)", min_value=1000, max_value=10_000_000, value=1_000_000)
+
+# Commission Rate Input
+commission_rate = st.sidebar.number_input("Commission Rate (%)", min_value=0.0, max_value=1.0, value=0.1425) / 100
+
+
+# Sizer Percentage
+position_sizer = st.sidebar.number_input("Position Sizer (%)", min_value=1, max_value=100, value=95)
+
 # Define list of stock tickers
 available_stocks = [
     "AAPL", "MSFT", "NVDA", "GOOG", "AMZN", "META",
@@ -115,111 +125,62 @@ start_date = st.sidebar.date_input("Start Date", datetime(2024, 1, 1), min_value
 end_date = st.sidebar.date_input("End Date", datetime(2024, 10, 1), min_value=min_date, max_value=max_date)
 
 
-# Checkbox to choose between single stock or multiple stocks
-single_stock = st.sidebar.checkbox("Single Stock", value=True)
-
 # Button to start the backtest
+# Run Backtest
 if st.sidebar.button("Run Backtest"):
+    trader = AITrader(
+        cash = initial_cash,
+        commission = commission_rate,
+        size = position_sizer,
+        start_date=start_date,
+        end_date=end_date)
 
-    # Initialize the AITrader with the selected dates
-    trader = AITrader(start_date=start_date, end_date=end_date)
-
-    # Check if the required model and scaler files exist for ML strategies
+    # Check if model and scaler files exist for AI strategies
     if selected_strategy_name in ["Logistic Regression", "Gradient Boosting"]:
         model_path = f"./model/{stock_ticker}_{strategy_params['model_name']}_model.pkl"
         scaler_path = f"./model/{stock_ticker}_scaler.pkl"
+
         if not os.path.exists(model_path) or not os.path.exists(scaler_path):
             st.error(f"Model or scaler file for {stock_ticker} not found. Train the model first.")
         else:
-            # Proceed with adding ML strategy
-            trader.add_strategy(
-                MLTradingStrategy,
-                params={'model_name': strategy_params['model_name'], 'stock_ticker': stock_ticker},
-            )
-
-            # Run the backtest
-            try:
-                metrics = trader.run(1, stock_ticker=stock_ticker)
-            except ValueError as e:
-                st.error(str(e))
-                # Prevent further code execution in this block
-                st.stop()
-
-            # Display log contents in Streamlit
-            st.write("### Backtest Results")   
-
-            metric_cols = st.columns(len(metrics))  # Create one column per metric
-            for col, (metric, value) in zip(metric_cols, metrics.items()):
-                col.metric(label=metric, value=value)
-
-            # Open and display the log file contents
-            log_file_path = "./log/trading_log.txt"
-            with open(log_file_path, "r") as file:
-                log_content = file.read()
-            
-            st.text_area("Log File Content", log_content, height=300)
-            
-            # Display the backtest plot
-            st.write("### Backtest Performance Chart")
-            st.pyplot(trader.plot())
+            trader.add_strategy(MLTradingStrategy, strategy_params)
     elif selected_strategy_name == "Recurrent Neural Network (RNN)":
-        predicted_file_path = f"./data/us_stock/{stock_ticker}.csv"
-        if not os.path.exists(predicted_file_path):
-            st.error(f"Model or scaler file for {stock_ticker} not found. Train the model first.")
+        if not os.path.exists(f"./data/us_stock/predictions/{stock_ticker}.csv"):
+            st.error(f"Data for {stock_ticker} not found. Train the model first.")
         else:
-            trader.add_strategy(selected_strategy)
-            # Run the backtest
-            try:
-                metrics = trader.run(1, stock_ticker=stock_ticker)
-            except ValueError as e:
-                st.error(str(e))
-                st.stop()
-
-            # Display log contents in Streamlit
-            st.write("### Backtest Results")   
-
-            metric_cols = st.columns(len(metrics))  # Create one column per metric
-            for col, (metric, value) in zip(metric_cols, metrics.items()):
-                col.metric(label=metric, value=value)
-
-            # Open and display the log file contents
-            log_file_path = "./log/trading_log.txt"
-            with open(log_file_path, "r") as file:
-                log_content = file.read()
-            
-            st.text_area("Log File Content", log_content, height=300)
-            
-            # Display the backtest plot
-            st.write("### Backtest Performance Chart")
-            st.pyplot(trader.plot())
-
+            trader.add_strategy(RNNStrategy, {})
     else:
-        # Add non-ML strategy
         trader.add_strategy(selected_strategy, strategy_params)
 
-        # Run the backtest
-        try:
-            metrics = trader.run(1, stock_ticker=stock_ticker)
-        except ValueError as e:
-            st.error(str(e))
-            st.stop()
+    # Execute backtest
+    try:
+        metrics = trader.run(1, stock_ticker=stock_ticker)
+        st.write("### Backtest Results")
+     
+        metrics_list = list(metrics.items())
+        first_row_metrics = metrics_list[:1]  # First three metrics
+        second_row_metrics = metrics_list[1:]  # Remaining metrics
 
-        # Display log contents in Streamlit
-        st.write("### Backtest Results")   
+        # Display the first row of metrics
+        if first_row_metrics:
+            first_row = st.columns(len(first_row_metrics))
+            for col, (metric, value) in zip(first_row, first_row_metrics):
+                col.metric(label=metric, value=value)
 
-        metric_cols = st.columns(len(metrics))  # Create one column per metric
-        for col, (metric, value) in zip(metric_cols, metrics.items()):
-            col.metric(label=metric, value=value)
+        # Display the second row of metrics
+        if second_row_metrics:
+            second_row = st.columns(len(second_row_metrics))
+            for col, (metric, value) in zip(second_row, second_row_metrics):
+                col.metric(label=metric, value=value)
 
-        # Open and display the log file contents
-        log_file_path = "./log/trading_log.txt"
-        with open(log_file_path, "r") as file:
-            log_content = file.read()
-        
-        st.text_area("Log File Content", log_content, height=300)
-        
-        # Display the backtest plot
+        # Display log
+        with open("./log/trading_log.txt", "r") as log_file:
+            st.text_area("Log File Content", log_file.read(), height=300)
+
+        # Display performance chart
         st.write("### Backtest Performance Chart")
         st.pyplot(trader.plot())
-
-        
+    except ValueError as e:
+        st.error(str(e))
+    
+    

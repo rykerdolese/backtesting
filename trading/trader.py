@@ -29,6 +29,7 @@ class AITrader:
         strategy: Optional[BaseStrategy] = None,
         cash: int = 1000000, # starting cash balance
         commission: float = 0.001425, # Commission rate for trades
+        size: int = 95, # position sizing percentage
         start_date: str = None,
         end_date: str = None,
         data_dir: Optional[str] = "./data/us_stock/",
@@ -39,6 +40,7 @@ class AITrader:
         """
         self.cash = cash
         self.commission = commission
+        self.size = size
         self.start_date = start_date
         self.end_date = end_date
         self.strategy = strategy
@@ -60,25 +62,17 @@ class AITrader:
         self.log_handle.write(txt + '\n')
         self.log_handle.flush()  # Ensure the message is written to the file immediately
 
-    def add_strategy(self, strategy: BaseStrategy, params: Optional[dict] = None, model=None) -> None:
+    def add_strategy(self, strategy: BaseStrategy, params: Optional[dict] = None,) -> None:
         """
         Adds a trading strategy to the cerebro instance.
         """
         self.strategy = strategy
         if params:
-            if model:
-                self.cerebro.addstrategy(strategy, model=model, **params)
-                self.log(f"Strategy '{strategy.__name__}' added with model and parameters: {params}")
-            else:
-                self.cerebro.addstrategy(strategy, **params)
-                self.log(f"Strategy '{strategy.__name__}' added with parameters: {params}")
+            self.cerebro.addstrategy(strategy, **params)
+            self.log(f"Strategy '{strategy.__name__}' added with model and parameters: {params}")
         else:
-            if model:
-                self.cerebro.addstrategy(strategy, model=model)
-                self.log(f"Strategy '{strategy.__name__}' added with model.")
-            else:
-                self.cerebro.addstrategy(strategy)
-                self.log(f"Strategy '{strategy.__name__}' added without parameters.")
+            self.cerebro.addstrategy(strategy)
+            self.log(f"Strategy '{strategy.__name__}' added without parameters.")
 
     def add_one_stock(self, df: Optional[pd.DataFrame] = None) -> None:
         """
@@ -147,8 +141,8 @@ class AITrader:
         """
         Sets the sizer for position sizing.
         """
-        self.cerebro.addsizer(bt.sizers.PercentSizer, percents=95)
-        self.log("Sizer set to 95%.")
+        self.cerebro.addsizer(bt.sizers.PercentSizer, percents=self.size)
+        self.log(f"Sizer set to {self.size}%.")
 
     def analyze(self, result: List[bt.Strategy]) -> dict:
         """

@@ -73,6 +73,8 @@ class AITrader:
         else:
             self.cerebro.addstrategy(strategy)
             self.log(f"Strategy '{strategy.__name__}' added without parameters.")
+    
+    
 
     def add_one_stock(self, df: Optional[pd.DataFrame] = None) -> None:
         """

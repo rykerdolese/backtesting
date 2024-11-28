@@ -150,49 +150,55 @@ class AITrader:
         self.cerebro.addsizer(bt.sizers.PercentSizer, percents=95)
         self.log("Sizer set to 95%.")
 
-    def analyze(self, result: List[bt.Strategy]) -> None:
+    def analyze(self, result: List[bt.Strategy]) -> dict:
         """
-        Analyzes the results of the backtest.
+        Analyzes the results of the backtest and returns metrics for comparison.
         """
-        self.log(f"Ending value: {round(self.cerebro.broker.getvalue())}")
-
+        metrics = {}
+        self.log("\n---Result Analysis---")
+        metrics["Ending Value"] = round(self.cerebro.broker.getvalue())
+    
         # Extract performance metrics
-        returns = result[0].analyzers.Returns.get_analysis()
-        total_return = round(returns['rtot'], 2)
-        annualized_return = round(returns['rnorm'], 2)
-        sharpe_ratio = result[0].analyzers.SharpeRatio.get_analysis().get("sharperatio")
-        max_drawdown = result[0].analyzers.DrawDown.get_analysis().get("max", {}).get("drawdown")
+        returns = result[0].analyzers.Returns.get_analysis() if hasattr(result[0].analyzers, "Returns") else None
+        sharpe_ratio = result[0].analyzers.SharpeRatio.get_analysis().get("sharperatio") if hasattr(result[0].analyzers, "SharpeRatio") else None
+        drawdown = result[0].analyzers.DrawDown.get_analysis() if hasattr(result[0].analyzers, "DrawDown") else None
+
+        if returns:
+            metrics["Total Returns (%)"] = round(returns.get("rtot", 0) * 100, 2)
+            metrics["Annualized Returns (%)"] = round(returns.get("rnorm", 0) * 100, 2)
+
+        if sharpe_ratio is not None:
+            metrics["Sharpe Ratio"] = round(sharpe_ratio, 3)
+
+        if drawdown:
+            metrics["Max Drawdown (%)"] = round(drawdown.get("max", {}).get("drawdown", 0), 2)
 
         # Log the metrics
-        self.log(f"Total Returns: {total_return}")
-        self.log(f"Annualized Returns: {annualized_return}")
-        if sharpe_ratio:
-            self.log(f"Sharpe Ratio: {round(sharpe_ratio, 2)}")
-        if max_drawdown:
-            self.log(f"Max Drawdown: {round(max_drawdown, 2)}%")
-
-         # Evaluate based on metrics
+        for metric, value in metrics.items():
+            self.log(f"{metric}: {value}")
+        
+        # Evaluate based on metrics
         self.log("\n--- Strategy Evaluation ---")
-        if total_return > 0:
+        if metrics["Total Returns (%)"] > 0:
             self.log("Total Returns are positive, indicating a profitable strategy.")
-        elif total_return < 0:
+        elif metrics["Total Returns (%)"] < 0:
             self.log("Total Returns are negative, indicating a loss.")
         else:
             self.log("No Returns.")
 
         if sharpe_ratio:
-            if sharpe_ratio > 1:
+            if metrics["Sharpe Ratio"] > 1:
                 self.log("Good risk-adjusted returns (Sharpe Ratio > 1), indicating a potentially effective strategy.")
-            elif sharpe_ratio > 2:
+            elif metrics["Sharpe Ratio"] > 2:
                 self.log("Excellent risk-adjusted returns (Sharpe Ratio > 2).")
             else:
                 self.log("Low risk-adjusted returns, suggesting that risk might not be well compensated.")
 
-        if max_drawdown and max_drawdown > 20:
+        if drawdown and metrics["Max Drawdown (%)"] > 20:
             self.log("High maximum drawdown (> 20%), which may indicate high risk.")
         else:
             self.log("Max Drawdown is within acceptable limits (< 20%), suggesting a stable strategy.")
-
+        return metrics
     def run(self, sigle_stock=1, stock_ticker="AAPL") -> None:
         """
         Runs the backtest with the specified data type and sizer.
@@ -218,9 +224,10 @@ class AITrader:
             self.add_sizer()
             self.add_analyzers()
             result = self.cerebro.run()
-            self.analyze(result)
+            analysis = self.analyze(result)
         else:
             raise ValueError("No strategy specified.")
+        return analysis
 
     def plot(self) -> None:
         """

@@ -14,15 +14,15 @@ class MLTradingStrategy(BaseStrategy):
         stock_ticker='AAPL',  # Default stock ticker
     )
 
-    def __init__(self, model_name='Logistic_Regression', stock_ticker='AAPL'):
-        if model_name not in ['Logistic_Regression', 'Gradient_Boosting']:
+    def __init__(self):
+        if self.params.model_name not in ['Logistic_Regression', 'Gradient_Boosting']:
             raise ValueError("Unsupported model name. Choose 'logistic' or 'gradient_boosting'.")
 
-        self.model_name = model_name
-        self.stock_ticker = stock_ticker
+        self.model_name = self.params.model_name
+        self.stock_ticker = self.params.stock_ticker
 
-        model_path = f"./model/{stock_ticker}_{model_name}_model.pkl"
-        scaler_path = f"./model/{stock_ticker}_scaler.pkl"
+        model_path = f"./model/{self.stock_ticker}_{self.model_name}_model.pkl"
+        scaler_path = f"./model/{self.stock_ticker}_scaler.pkl"
 
         self.scaler = joblib.load(scaler_path)
         self.model = joblib.load(model_path)

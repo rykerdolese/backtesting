@@ -28,6 +28,17 @@ st.write("##### Set the Configuration to run the backtest.")
 # Sidebar for AI Trader Configuration
 st.sidebar.title("AI Trader Configuration")
 
+# Define list of stock tickers
+available_stocks = [
+    "AAPL", "MSFT", "NVDA", "GOOG", "AMZN", "META",
+    "BRK-B", "LLY", "AVGO", "TSLA", "WMT", "JPM", 
+    "V", "UNH", "XOM", "ORCL", "MA", "HD", "PG", 
+    "COST", "^SPX"
+]
+
+# Dropdown menu for selecting a stock ticker
+stock_ticker = st.sidebar.selectbox("Select Stock Ticker", available_stocks)
+
 # Define strategy categories
 strategy_categories = {
     "Traditional Strategies": {
@@ -93,6 +104,7 @@ if selected_category == "Traditional Strategies":
 else:
     if selected_strategy_name in ["Logistic Regression", "Gradient Boosting"]:
         strategy_params['model_name'] = selected_strategy_name.replace(" ", "_")
+        strategy_params['stock_ticker'] = stock_ticker
 
 # Define the minimum and maximum date range for backtesting
 min_date = datetime(2014, 1, 1)
@@ -102,16 +114,6 @@ max_date = datetime(2024, 10, 31)
 start_date = st.sidebar.date_input("Start Date", datetime(2024, 1, 1), min_value=min_date, max_value=max_date)
 end_date = st.sidebar.date_input("End Date", datetime(2024, 10, 1), min_value=min_date, max_value=max_date)
 
-# Define list of stock tickers
-available_stocks = [
-    "AAPL", "MSFT", "NVDA", "GOOG", "AMZN", "META",
-    "BRK-B", "LLY", "AVGO", "TSLA", "WMT", "JPM", 
-    "V", "UNH", "XOM", "ORCL", "MA", "HD", "PG", 
-    "COST", "^SPX"
-]
-
-# Dropdown menu for selecting a stock ticker
-stock_ticker = st.sidebar.selectbox("Select Stock Ticker", available_stocks)
 
 # Checkbox to choose between single stock or multiple stocks
 single_stock = st.sidebar.checkbox("Single Stock", value=True)
@@ -137,7 +139,7 @@ if st.sidebar.button("Run Backtest"):
 
             # Run the backtest
             try:
-                trader.run(1, stock_ticker=stock_ticker)
+                metrics = trader.run(1, stock_ticker=stock_ticker)
             except ValueError as e:
                 st.error(str(e))
                 # Prevent further code execution in this block
@@ -146,15 +148,19 @@ if st.sidebar.button("Run Backtest"):
             # Display log contents in Streamlit
             st.write("### Backtest Results")   
 
+            metric_cols = st.columns(len(metrics))  # Create one column per metric
+            for col, (metric, value) in zip(metric_cols, metrics.items()):
+                col.metric(label=metric, value=value)
+
             # Open and display the log file contents
             log_file_path = "./log/trading_log.txt"
             with open(log_file_path, "r") as file:
                 log_content = file.read()
             
-            st.text_area("Log File Content", log_content, height=400)
+            st.text_area("Log File Content", log_content, height=300)
             
             # Display the backtest plot
-            st.write("### Backtest Plot")
+            st.write("### Backtest Performance Chart")
             st.pyplot(trader.plot())
     elif selected_strategy_name == "Recurrent Neural Network (RNN)":
         predicted_file_path = f"./data/us_stock/{stock_ticker}.csv"
@@ -164,7 +170,7 @@ if st.sidebar.button("Run Backtest"):
             trader.add_strategy(selected_strategy)
             # Run the backtest
             try:
-                trader.run(1, stock_ticker=stock_ticker)
+                metrics = trader.run(1, stock_ticker=stock_ticker)
             except ValueError as e:
                 st.error(str(e))
                 st.stop()
@@ -172,15 +178,19 @@ if st.sidebar.button("Run Backtest"):
             # Display log contents in Streamlit
             st.write("### Backtest Results")   
 
+            metric_cols = st.columns(len(metrics))  # Create one column per metric
+            for col, (metric, value) in zip(metric_cols, metrics.items()):
+                col.metric(label=metric, value=value)
+
             # Open and display the log file contents
             log_file_path = "./log/trading_log.txt"
             with open(log_file_path, "r") as file:
                 log_content = file.read()
             
-            st.text_area("Log File Content", log_content, height=400)
+            st.text_area("Log File Content", log_content, height=300)
             
             # Display the backtest plot
-            st.write("### Backtest Plot")
+            st.write("### Backtest Performance Chart")
             st.pyplot(trader.plot())
 
     else:
@@ -189,7 +199,7 @@ if st.sidebar.button("Run Backtest"):
 
         # Run the backtest
         try:
-            trader.run(1, stock_ticker=stock_ticker)
+            metrics = trader.run(1, stock_ticker=stock_ticker)
         except ValueError as e:
             st.error(str(e))
             st.stop()
@@ -197,13 +207,19 @@ if st.sidebar.button("Run Backtest"):
         # Display log contents in Streamlit
         st.write("### Backtest Results")   
 
+        metric_cols = st.columns(len(metrics))  # Create one column per metric
+        for col, (metric, value) in zip(metric_cols, metrics.items()):
+            col.metric(label=metric, value=value)
+
         # Open and display the log file contents
         log_file_path = "./log/trading_log.txt"
         with open(log_file_path, "r") as file:
             log_content = file.read()
         
-        st.text_area("Log File Content", log_content, height=400)
+        st.text_area("Log File Content", log_content, height=300)
         
         # Display the backtest plot
-        st.write("### Backtest Plot")
+        st.write("### Backtest Performance Chart")
         st.pyplot(trader.plot())
+
+        

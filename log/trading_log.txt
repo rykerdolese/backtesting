@@ -1,15 +1,19 @@
 --- AITrader initialization ---
-Strategy 'PutCall' added without parameters.
+Strategy 'BuyHold' added without parameters.
 Data loaded.
 Starting Value: 1000000
 Sizer set to 95%.
 Analyzers added.
 
 --- Backtesting ---
-Ending value: 1000000
-Total Returns: 0.0
-Annualized Returns: 0.0
+2024-01-03, [BUY] EXECUTED at Price: 184.22     | Total Cost: 942733.26  | Commision: 1343.39   
+
+---Result Analysis---
+Ending Value: 1213538
+Total Returns (%): 19.35
+Annualized Returns (%): 29.44
+Max Drawdown (%): 14.64
 
 --- Strategy Evaluation ---
-No Returns.
+Total Returns are positive, indicating a profitable strategy.
 Max Drawdown is within acceptable limits (< 20%), suggesting a stable strategy.

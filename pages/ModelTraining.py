@@ -23,7 +23,13 @@ st.set_page_config(page_title="Model Training Page", page_icon="💡")
 st.title("AI Model Training Page")
 
 # Stock selection
-available_stocks = ["AAPL", "MSFT", "NVDA", "GOOG", "AMZN", "META", "^SPX"]
+available_stocks = [
+    "AAPL", "MSFT", "NVDA", "GOOG", "AMZN", "META",
+    "BRK-B", "LLY", "AVGO", "TSLA", "WMT", "JPM", 
+    "V", "UNH", "XOM", "ORCL", "MA", "HD", "PG", 
+    "COST", "^SPX"
+]
+
 stock_ticker = st.selectbox("Select Training Stock Data", available_stocks)
 
 # Date range for training data

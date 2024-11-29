@@ -14,7 +14,7 @@ Clone this repository and install the required dependencies:
 
 - Run this first
 ```bash
-brew intsall ta-lib
+brew install ta-lib
 ```
 - Then
 ```bash

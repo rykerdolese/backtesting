@@ -24,6 +24,8 @@ def plot_chart(stock_data, title, overall_market_condition ):
     fig.update_xaxes(title_text="Time")
     fig.update_yaxes(title_text="Closing Price")
     if overall_market_condition == "Bullish":
+        fig.update_traces(line_color="green")
+    elif overall_market_condition == 'Nuetral':
         fig.update_traces(line_color="steelblue")
     else:
         fig.update_traces(line_color="red")
@@ -49,8 +51,27 @@ ticker_symbol = st.sidebar.selectbox(
         "AVGO", "TSLA", "WMT", "JPM", "V", "UNH", "XOM", "ORCL", "MA", "HD", "PG", "COST"
     ]
 )
-period = st.sidebar.selectbox("Select Period", ["1d", "5d", "1mo", "3mo", "6mo", "1y", "2y", "5y", "10y", "ytd", "max"], index=0)
-interval = st.sidebar.selectbox("Select Interval", ["1m", "5m", "15m", "1h", "1d", "1wk", "1mo"], index=0)
+
+allowed_intervals = {
+    "1d": ["1m", "5m", "15m", "1h"],
+    "5d": ["5m", "15m", "1h", "1d"],
+    "1mo": ["15m", "1h", "1d", "1wk"],
+    "3mo": ["1h", "1d", "1wk"],
+    "6mo": ["1h", "1d", "1wk"],
+    "1y": ["1d", "1wk", "1mo"],
+    "2y": ["1d", "1wk", "1mo"],
+    "5y": ["1wk", "1mo"],
+    "10y": ["1mo"],
+    "ytd": ["1d", "1wk"],
+    "max": ["1wk", "1mo"]
+}
+# Select period
+period = st.sidebar.selectbox("Select Period", list(allowed_intervals.keys()), index=0)
+
+# Dynamically change intervals based on period
+valid_intervals = allowed_intervals[period]
+interval = st.sidebar.selectbox("Select Interval", valid_intervals, index=0)
+
 
 # Default ticker settings for S&P 500, Dow Jones, and NASDAQ (for market condition analysis)
 default_period = "1d"
@@ -64,14 +85,20 @@ sp500_data = fetch_realtime_stock_data("^GSPC", default_period, default_interval
 dow_data = fetch_realtime_stock_data("^DJI", default_period, default_interval)
 nasdaq_data = fetch_realtime_stock_data("^IXIC", default_period, default_interval)
 
-# Calculate the percentage change for S&P 500, Dow Jones, and NASDAQ for market condition
-if sp500_data is not None and dow_data is not None and nasdaq_data is not None:
+try:
     sp500_percentage_change = (sp500_data['Close'].iloc[-1] - sp500_data['Close'].iloc[0]) / sp500_data['Close'].iloc[0] * 100
     dow_percentage_change = (dow_data['Close'].iloc[-1] - dow_data['Close'].iloc[0]) / dow_data['Close'].iloc[0] * 100
     nasdaq_percentage_change = (nasdaq_data['Close'].iloc[-1] - nasdaq_data['Close'].iloc[0]) / nasdaq_data['Close'].iloc[0] * 100
-    overall_market_condition = 'Bullish' if sp500_percentage_change > 0 and dow_percentage_change > 0 and nasdaq_percentage_change > 0 else 'Bearish'
-else:
+    if sp500_percentage_change > 0 and dow_percentage_change > 0 and nasdaq_percentage_change > 0:
+        overall_market_condition = "Bullish"
+    elif sp500_percentage_change < 0 and dow_percentage_change < 0 and nasdaq_percentage_change < 0:
+        overall_market_condition = "Bearish"
+    else :
+        overall_market_condition = "Nuetral"
+except BaseException as e:
+    # An exception here probably means that some data is unnavailable
     overall_market_condition = "Unavailable"
+
 
 st.subheader(f"Overall Market Condition: {overall_market_condition}")
 

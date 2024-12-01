@@ -9,7 +9,8 @@ from trading.traditional_strategies import (
     RsiBollingerBands, NaiveRateOfChange, ROCMovingAverage,
     FearGreed, PutCall, VIX
 )
-from trading.ai_strategies import (MLTradingStrategy, RNNStrategy)
+from trading.ai_strategies import (MLTradingStrategy, RNNStrategy, DQNStrategy)
+from trading.rl_module import *
 
 # Page configuration
 st.set_page_config(page_title="Backtest Comparison", page_icon="📊")
@@ -53,8 +54,8 @@ def configure_backtest(label: str):
         },
         "AI-Powered Strategies": {
             "Logistic Regression": (MLTradingStrategy, {"model_name": "Logistic_Regression"}),
-            "Gradient Boosting": (MLTradingStrategy, {"model_name": "Gradient_Boosting"}),
             "Recurrent Neural Network (RNN)": (RNNStrategy, {}),
+            "Deep Q Network (DQN)": (DQNStrategy, {}),
         },
     }
 
@@ -124,7 +125,7 @@ if st.sidebar.button("Run and Compare Backtests"):
         )
 
         # Add the appropriate strategy
-        if config["selected_strategy_name"] in ["Logistic Regression", "Gradient Boosting"]:
+        if config["selected_strategy_name"] == "Logistic Regression":
             # Ensure AI model and scaler files exist
             model_path = f"./model/{config['stock_ticker']}_{config['strategy_params'].get('model_name')}_model.pkl"
             scaler_path = f"./model/{config['stock_ticker']}_scaler.pkl"
@@ -140,6 +141,15 @@ if st.sidebar.button("Run and Compare Backtests"):
                 st.error(f"Data for {config['stock_ticker']} not found. Train the model first.")
             else:
                 trader.add_strategy(RNNStrategy, {})
+        elif config["selected_strategy_name"] == "Deep Q Network (DQN)":
+            # Load the trained model
+            model_path = f"./model/{config['stock_ticker']}_DQN_model.pth"
+            if not os.path.exists(model_path):
+                st.error(f"Model for {config['stock_ticker']} not found. Train the model first.")
+            else:
+                agent = DQNAgent(11, 3)
+                agent.model.load_state_dict(torch.load(model_path ))
+                trader.add_strategy(DQNStrategy, {"model": agent})
         else:
             trader.add_strategy(config["selected_strategy"], params=config["strategy_params"])
 

@@ -167,28 +167,26 @@ if st.sidebar.button("Run and Compare Backtests"):
             return None, None
 
 
-    # Run both backtests
-    metrics_1, chart_1 = run_backtest(config_1)
-    metrics_2, chart_2 = run_backtest(config_2)
+    
 
     # Display results
     col1, col2 = st.columns(2)
-
-    if metrics_1 and chart_1 and metrics_2 and chart_2:
-        col1, col2 = st.columns(2)
+    
+    metrics_1, chart_1 = run_backtest(config_1)
+    if metrics_1 and chart_1 :
         with col1:
             st.write("### Configuration 1 Results")
             for metric, value in metrics_1.items():
                 st.metric(label=metric, value=value)
-            
+            st.pyplot(chart_1)
+    
+    metrics_2, chart_2 = run_backtest(config_2)
+    if metrics_2 and chart_2:
         with col2:
             st.write("### Configuration 2 Results")
             for metric, value in metrics_2.items():
                 st.metric(label=metric, value=value)
-
-        col1, col2 = st.columns(2)
-        with col1:
-            st.pyplot(chart_1)
-        with col2:
             st.pyplot(chart_2)
+
+
         

@@ -1,6 +1,7 @@
 from trading.base_strategy import *
 import joblib
 from trading.utils import calculate_indicators_bt
+import numpy as np
 
 selected_features = ['Close', 'SMA_10', 'SMA_50', 'Momentum', 'RSI', 'MACD', 'BB_Middle', 'BB_Upper', 'BB_Lower']
 
@@ -64,4 +65,30 @@ class RNNStrategy(BaseStrategy):
                 self.log(f'SELL CREATE {self.data.close[0]:.2f}')
 
 
+class DQNStrategy(BaseStrategy):
+    params = (("model", None),)
+    def __init__(self):
+        self.model = self.params.model
+        self.selected_features = selected_features
 
+        # Calculate indicators for Backtrader data
+        self.indicators = calculate_indicators_bt(self.data)
+        for ind in self.indicators:
+            setattr(self, ind, self.indicators[ind])
+
+    def next(self):
+        # Extract the selected features for the current timestep
+        state = np.array([
+            getattr(self, feature)[0] for feature in self.selected_features
+        ])
+
+        # Get the action from the DQN model
+        action = self.model.act(state)
+
+        # Execute the action
+        if action == 1:  # Buy
+            if not self.position:
+                self.buy(size=100)
+        elif action == 2:  # Sell
+            if self.position:
+                self.sell(size=100)

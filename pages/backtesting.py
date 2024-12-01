@@ -8,7 +8,8 @@ from trading.traditional_strategies import (
     RsiBollingerBands, NaiveRateOfChange, ROCMovingAverage,
     FearGreed, PutCall, VIX, 
 )
-from trading.ai_strategies import (MLTradingStrategy, RNNStrategy)
+from trading.ai_strategies import (MLTradingStrategy, RNNStrategy, DQNStrategy)
+from trading.rl_module import *
 import mpld3
 import streamlit.components.v1 as components
 import os
@@ -67,8 +68,8 @@ strategy_categories = {
     },
     "AI-Powered Strategies": {
         "Logistic Regression": (MLTradingStrategy, {"model_name": "Logistic_Regression"}),
-        "Gradient Boosting": (MLTradingStrategy, {"model_name": "Gradient_Boosting"}),
         "Recurrent Neural Network (RNN)": (RNNStrategy, {}),
+        "Deep Q Network (DQN)": (DQNStrategy, {}),
     },
 }
 
@@ -112,7 +113,7 @@ if selected_category == "Traditional Strategies":
         strategy_params['fast_ma_period'] = st.sidebar.number_input("Fast MA Period", min_value=1, max_value=200, value=default_params["fast_ma_period"])
         strategy_params['slow_ma_period'] = st.sidebar.number_input("Slow MA Period", min_value=1, max_value=200, value=default_params["slow_ma_period"])
 else:
-    if selected_strategy_name in ["Logistic Regression", "Gradient Boosting"]:
+    if selected_strategy_name == "Logistic Regression":
         strategy_params['model_name'] = selected_strategy_name.replace(" ", "_")
         strategy_params['stock_ticker'] = stock_ticker
 
@@ -136,7 +137,7 @@ if st.sidebar.button("Run Backtest"):
         end_date=end_date)
 
     # Check if model and scaler files exist for AI strategies
-    if selected_strategy_name in ["Logistic Regression", "Gradient Boosting"]:
+    if selected_strategy_name == "Logistic Regression":
         model_path = f"./model/{stock_ticker}_{strategy_params['model_name']}_model.pkl"
         scaler_path = f"./model/{stock_ticker}_scaler.pkl"
 
@@ -149,6 +150,15 @@ if st.sidebar.button("Run Backtest"):
             st.error(f"Data for {stock_ticker} not found. Train the model first.")
         else:
             trader.add_strategy(RNNStrategy, {})
+    elif selected_strategy_name == "Deep Q Network (DQN)":
+        # Load the trained model
+        model_path = f"./model/{stock_ticker}_DQN_model.pth"
+        if not os.path.exists(model_path):
+            st.error(f"Model for {stock_ticker} not found. Train the model first.")
+        else:
+            agent = DQNAgent(11, 3)
+            agent.model.load_state_dict(torch.load(model_path ))
+            trader.add_strategy(DQNStrategy, {"model": agent})
     else:
         trader.add_strategy(selected_strategy, strategy_params)
 

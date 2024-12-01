@@ -13,6 +13,7 @@ from trading.utils import *
 from trading.trader import *
 from trading.traditional_strategies import *
 from trading.ai_strategies import *
+from trading.rl_module import *
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -39,7 +40,7 @@ start_date = st.date_input("Training Data Start Date", datetime(2014, 1, 1), min
 end_date = st.date_input("Training Data End Date", datetime(2024, 10, 1), min_value=min_date, max_value=max_date)
 
 # Model selection
-available_models = ["Logistic Regression", "Gradient Boosting", "RNN"]
+available_models = ["Logistic Regression", "RNN", "DQN"]
 selected_model = st.selectbox("Select Training Model", available_models)
 
 
@@ -53,7 +54,7 @@ if st.button("Start training"):
     data = pd.read_csv(f"./data/us_stock/all_{stock_ticker}.csv", parse_dates=["Date"], index_col="Date")
     data = data.loc[start_date:end_date]
 
-    if selected_model in ["Logistic Regression", "Gradient Boosting"]:
+    if selected_model in ["Logistic Regression",]:
         progress_bar = st.progress(0)  # Initialize progress bar
         status_text = st.empty()  # Placeholder for status updates
 
@@ -234,5 +235,65 @@ if st.button("Start training"):
             data.iloc[time_step:, data.columns.get_loc('predictions')] = predictions.flatten()
             data.to_csv(f"./data/us_stock/predictions/{stock_ticker}.csv")
             training_status.success(f"RNN model trained and saved for {stock_ticker}!")
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
+    
+    # Training DQN model
+    elif selected_model == "DQN":
+        def train_dqn(stock_ticker):
+            data = pd.read_csv(f"./data/us_stock/all_{stock_ticker}.csv")
+            data['Date'] = pd.to_datetime(data['Date'])
+            data.set_index('Date', inplace=True)
+
+            # Initialize trading environment
+            env = TradingEnv(data)
+            state_size = env.observation_space.shape[0]
+            action_size = env.action_space.n
+
+            # Initialize DQN agent
+            agent = DQNAgent(state_size, action_size)
+
+            # Parameters for training
+            episodes = 200
+            batch_size = 32
+
+            # Initialize Streamlit progress bar and status
+            progress_bar = st.progress(0)  # Progress bar
+            status_text = st.empty()  # Placeholder for status updates
+            total_steps = episodes
+
+            for e in range(episodes):
+                state = env.reset()
+                total_reward = 0
+
+                for time in range(env.max_steps):
+                    action = agent.act(state)
+                    next_state, reward, done, _ = env.step(action)
+                    agent.remember(state, action, reward, next_state, done)
+                    state = next_state
+                    total_reward += reward
+
+                    if done:
+                        break
+
+                # Replay experiences and update the model
+                agent.replay(batch_size)
+
+                # Update progress bar and status text
+                progress = (e + 1) / total_steps
+                progress_bar.progress(progress)
+                status_text.text(f"Episode {e + 1}/{episodes}, Total Reward: {total_reward}")
+
+            # Save the trained model
+            model_file_path = f"./model/{stock_ticker}_DQN_model.pth"
+            torch.save(agent.model.state_dict(), model_file_path)
+            status_text.text("")  # Clear status text
+            progress_bar.empty()  # Clear progress bar
+
+        try:
+            # Start training
+            training_status.info("DQN training started...")
+            train_dqn(stock_ticker)
+            training_status.success(f"DQN model trained and saved for {stock_ticker}!")
         except Exception as e:
             st.error(f"An error occurred: {e}")

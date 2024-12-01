@@ -146,7 +146,6 @@ stack-data==0.6.3
 statsmodels==0.14.1
 streamlit==1.39.0
 sympy==1.13.1
-TA-Lib @ file:///Users/runner/miniforge3/conda-bld/ta-lib_1719846396129/work
 tabulate==0.9.0
 tenacity==8.5.0
 tensorboard==2.18.0
@@ -170,7 +169,7 @@ typing-inspect==0.9.0
 typing_extensions==4.11.0
 tzdata==2024.1
 urllib3==2.2.2
-watchdog==6.0.0
+watchdog==5.0.3
 wcwidth==0.2.13
 webencodings==0.5.1
 Werkzeug==3.1.3

@@ -143,6 +143,17 @@ This repository contains various trading strategies implemented using Backtrader
 
 ---
 
+### **15. Reinforcement Learning (DQN) Strategy**
+- **Objective**: Use Deep Q-Networks (DQN) to learn an optimal trading policy.
+- **Logic**:
+  - Train a DQN agent using an environment designed for stock trading.
+  - The agent learns through exploration and rewards based on portfolio performance.
+  - **Buy Signal**: Action output by the DQN agent suggests buying.
+  - **Sell Signal**: Action output by the DQN agent suggests selling.
+- **Label**: Rolling (6 months to 1 year).
+
+---
+
 ## Strategy Summary Table
 
 | Strategy Name                | Objective                        | Label                      | Typical Period Range       |
@@ -161,5 +172,6 @@ This repository contains various trading strategies implemented using Backtrader
 | VIX                          | Measure market volatility        | Event-Driven               | Targeted event periods    |
 | Machine Learning (ML)        | Predict with ML models           | Rolling                    | 3 months to 1 year        |
 | RNN                          | Predict with RNN models          | Rolling                    | 3 months to 1 year        |
+| Reinforcement Learning (DQN) | Learn trading policy with DQN    | Rolling                    | 6 months to 1 year        |
 
----
+--- 

@@ -37,7 +37,7 @@ stock_ticker = st.selectbox("Select Training Stock Data", available_stocks)
 min_date = datetime(2014, 1, 1)
 max_date = datetime(2024, 10, 31)
 start_date = st.date_input("Training Data Start Date", datetime(2014, 1, 1), min_value=min_date, max_value=max_date)
-end_date = st.date_input("Training Data End Date", datetime(2024, 10, 1), min_value=min_date, max_value=max_date)
+end_date = st.date_input("Training Data End Date", datetime(2024, 10, 31), min_value=min_date, max_value=max_date)
 
 # Model selection
 available_models = ["Logistic Regression", "RNN", "DQN"]

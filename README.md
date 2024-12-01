@@ -7,7 +7,7 @@ This project is an AI trading application that allows for backtesting different 
 - `main.py`: Script for running the main application functionality.
 - `backtrader`, `data`, `log`, `pages`, `trading`: Folders containing various modules, data, logs, pages, and trading strategies for the application.
 
-## Installation
+## Installation and Requirements
 Clone this repository and install the required dependencies:
 
 ###  For Mac<br>
@@ -20,6 +20,7 @@ brew install ta-lib
 ```bash
 pip install -r requirements.txt
 ```
+This project requires Python 3.11 or higher versions. Non ARM Macs will have to revise or manually install Torch and Tensorflow versions.
 
 ## Usage
 ###  Running the Application

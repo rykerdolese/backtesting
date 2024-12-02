@@ -11,6 +11,17 @@ from trading.traditional_strategies import (
 )
 from trading.ai_strategies import (MLTradingStrategy, RNNStrategy, DQNStrategy)
 from trading.rl_module import *
+from langchain.chat_models import ChatOpenAI
+from langchain.prompts import PromptTemplate
+from langchain.chains import LLMChain
+
+# Access OpenAI API key from Streamlit secrets
+openai_api_key = st.secrets["openai"]["api_key"]
+
+# Initialize OpenAI API in LangChain
+llm = ChatOpenAI(temperature=0, 
+             openai_api_key=openai_api_key)
+
 
 # Page configuration
 st.set_page_config(page_title="Backtest Comparison", page_icon="📊")
@@ -111,6 +122,46 @@ def configure_backtest(label: str):
 config_1 = configure_backtest("Configuration 1")
 config_2 = configure_backtest("Configuration 2")
 
+
+# Define a prompt template for comparison
+comparison_prompt = PromptTemplate(
+    input_variables=["metrics_1", "metrics_2"],
+    template="""
+    Compare the following two trading strategies based on their metrics and determine which is better. Provide a clear justification for your choice.
+
+    Strategy 1 Metrics:
+    {metrics_1}
+
+    Strategy 2 Metrics:
+    {metrics_2}
+
+    Criteria for comparison:
+    - Total Returns (%)
+    - Sharpe Ratio
+    - Maximum Drawdown (%)
+    - Ending Value
+
+    Provide a detailed explanation, highlighting strengths and weaknesses of both strategies, and declare the better strategy.
+    """
+)
+
+
+# Function to compare strategies
+# Function to compare strategies
+def compare_strategies(metrics_1, metrics_2):
+    try:
+        # Run the comparison using ChatOpenAI
+        result = comparison_chain.run({
+            "metrics_1": metrics_1,
+            "metrics_2": metrics_2
+        })
+        return result
+    except Exception as e:
+        return f"Error in LangChain comparison: {e}"
+
+# Create the LangChain chain
+comparison_chain = LLMChain(llm=llm, prompt=comparison_prompt)
+
 # Button to run and compare backtests
 if st.sidebar.button("Run and Compare Backtests"):
 
@@ -138,14 +189,14 @@ if st.sidebar.button("Run and Compare Backtests"):
             trader.add_strategy(config["selected_strategy"], params=config["strategy_params"])
         elif config["selected_strategy_name"] == "Recurrent Neural Network (RNN)":
             if not os.path.exists(f"./data/us_stock/predictions/{config['stock_ticker']}.csv"):
-                st.error(f"Data for {config['stock_ticker']} not found. Train the model first.")
+                st.error(f"RNN model for {config['stock_ticker']} not found. Train the model first.")
             else:
                 trader.add_strategy(RNNStrategy, {})
         elif config["selected_strategy_name"] == "Deep Q Network (DQN)":
             # Load the trained model
             model_path = f"./model/{config['stock_ticker']}_DQN_model.pth"
             if not os.path.exists(model_path):
-                st.error(f"Model for {config['stock_ticker']} not found. Train the model first.")
+                st.error(f"DQN Model for {config['stock_ticker']} not found. Train the model first.")
             else:
                 agent = DQNAgent(11, 3)
                 agent.model.load_state_dict(torch.load(model_path ))
@@ -166,12 +217,9 @@ if st.sidebar.button("Run and Compare Backtests"):
             st.error(f"Backtest failed: {e}")
             return None, None
 
-
-    
-
     # Display results
     col1, col2 = st.columns(2)
-    
+
     metrics_1, chart_1 = run_backtest(config_1)
     if metrics_1 and chart_1 :
         with col1:
@@ -187,6 +235,14 @@ if st.sidebar.button("Run and Compare Backtests"):
             for metric, value in metrics_2.items():
                 st.metric(label=metric, value=value)
             st.pyplot(chart_2)
+
+    if openai_api_key:
+        if metrics_1 and metrics_2:
+            st.write("### OpenAI Strategy Comparison (via LangChain)")
+            comparison_result = compare_strategies(metrics_1, metrics_2)
+            st.write(comparison_result)
+        else:
+            st.error("Run both backtests before comparing strategies.")
 
 
         

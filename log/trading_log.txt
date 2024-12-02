@@ -1,40 +1,18 @@
 --- AITrader initialization ---
-Strategy 'NaiveMovingAverage' added with model and parameters: {'sma_period': 30}
+Strategy 'BuyHold' added without parameters.
 Data loaded.
 Starting Value: 1000000
 Sizer set to 95%.
 Analyzers added.
 
 --- Backtesting ---
-2024-04-12, [BUY] EXECUTED at Price: 174.26     | Total Cost: 945766.69  | Commision: 1347.72   
-2024-04-17, [SELL] EXECUTED at Price: 169.61     | Total Cost: 945766.69  | Commision: 1311.75   
-2024-04-17, [OPERATION PROFIT] Gross: -25237.06  | Net: -27896.53 
-2024-04-30, [BUY] EXECUTED at Price: 173.33     | Total Cost: 922593.44  | Commision: 1314.70   
-2024-05-01, [SELL] EXECUTED at Price: 169.58     | Total Cost: 922593.44  | Commision: 1286.25   
-2024-05-01, [OPERATION PROFIT] Gross: -19960.34  | Net: -22561.29 
-2024-05-03, [] Order placement failed - status: Margin
-2024-05-06, [BUY] EXECUTED at Price: 182.35     | Total Cost: 896998.41  | Commision: 1278.22   
-2024-07-25, [SELL] EXECUTED at Price: 218.93     | Total Cost: 896998.41  | Commision: 1534.64   
-2024-07-25, [OPERATION PROFIT] Gross: 179940.71  | Net: 177127.85 
-2024-08-01, [BUY] EXECUTED at Price: 224.37     | Total Cost: 1081373.38 | Commision: 1540.96   
-2024-08-02, [SELL] EXECUTED at Price: 219.15     | Total Cost: 1081373.38 | Commision: 1505.11   
-2024-08-02, [OPERATION PROFIT] Gross: -25158.31  | Net: -28204.38 
-2024-08-16, [BUY] EXECUTED at Price: 223.92     | Total Cost: 1039827.37 | Commision: 1481.75   
-2024-09-05, [SELL] EXECUTED at Price: 221.63     | Total Cost: 1039827.37 | Commision: 1466.60   
-2024-09-05, [OPERATION PROFIT] Gross: -10634.14  | Net: -13582.50 
-2024-09-06, [BUY] EXECUTED at Price: 223.95     | Total Cost: 1037915.26 | Commision: 1479.03   
-2024-09-09, [SELL] EXECUTED at Price: 220.82     | Total Cost: 1037915.26 | Commision: 1458.36   
-2024-09-09, [OPERATION PROFIT] Gross: -14506.20  | Net: -17443.59 
-2024-09-12, [BUY] EXECUTED at Price: 222.50     | Total Cost: 1013338.88 | Commision: 1444.01   
-2024-09-17, [SELL] EXECUTED at Price: 215.75     | Total Cost: 1013338.88 | Commision: 1400.20   
-2024-09-17, [OPERATION PROFIT] Gross: -30741.74  | Net: -33585.95 
-2024-09-20, [BUY] EXECUTED at Price: 229.97     | Total Cost: 986881.45  | Commision: 1406.31   
+2024-01-03, [BUY] EXECUTED at Price: 184.22     | Total Cost: 942733.26  | Commision: 1343.39   
 
 ---Result Analysis---
-Ending Value: 1016312
-Total Returns (%): 1.62
-Annualized Returns (%): 2.18
-Max Drawdown (%): 15.75
+Ending Value: 1213538
+Total Returns (%): 19.35
+Annualized Returns (%): 29.44
+Max Drawdown (%): 14.64
 
 --- Strategy Evaluation ---
 Total Returns are positive, indicating a profitable strategy.

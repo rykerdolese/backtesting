@@ -1,18 +1,20 @@
 --- AITrader initialization ---
-Strategy 'BuyHold' added without parameters.
+Strategy 'RsiBollingerBands' added with model and parameters: {'rsi_period': 14, 'bb_period': 20, 'bb_dev': 2, 'oversold': 30, 'overbought': 70}
 Data loaded.
 Starting Value: 1000000
 Sizer set to 95%.
 Analyzers added.
 
 --- Backtesting ---
-2024-01-03, [BUY] EXECUTED at Price: 184.22     | Total Cost: 942733.26  | Commision: 1343.39   
+2024-03-05, [BUY] EXECUTED at Price: 170.76     | Total Cost: 926453.39  | Commision: 1320.20   
+2024-05-06, [SELL] EXECUTED at Price: 182.35     | Total Cost: 926453.39  | Commision: 1409.80   
+2024-05-06, [OPERATION PROFIT] Gross: 62881.27   | Net: 60151.27  
 
 ---Result Analysis---
-Ending Value: 1213538
-Total Returns (%): 19.35
-Annualized Returns (%): 29.44
-Max Drawdown (%): 14.64
+Ending Value: 1060151
+Total Returns (%): 5.84
+Annualized Returns (%): 8.1
+Max Drawdown (%): 7.12
 
 --- Strategy Evaluation ---
 Total Returns are positive, indicating a profitable strategy.

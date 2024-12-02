@@ -1,5 +1,5 @@
 --- AITrader initialization ---
-Strategy 'RsiBollingerBands' added with model and parameters: {'rsi_period': 14, 'bb_period': 20, 'bb_dev': 2, 'oversold': 30, 'overbought': 70}
+Strategy 'NaiveeRSI' added with model and parameters: {'rsi_period': 14, 'oversold': 30, 'overbought': 70}
 Data loaded.
 Starting Value: 1000000
 Sizer set to 95%.
@@ -7,13 +7,13 @@ Analyzers added.
 
 --- Backtesting ---
 2024-03-05, [BUY] EXECUTED at Price: 170.76     | Total Cost: 926453.39  | Commision: 1320.20   
-2024-05-06, [SELL] EXECUTED at Price: 182.35     | Total Cost: 926453.39  | Commision: 1409.80   
-2024-05-06, [OPERATION PROFIT] Gross: 62881.27   | Net: 60151.27  
+2024-05-16, [SELL] EXECUTED at Price: 190.47     | Total Cost: 926453.39  | Commision: 1472.58   
+2024-05-16, [OPERATION PROFIT] Gross: 106936.07  | Net: 104143.29 
 
 ---Result Analysis---
-Ending Value: 1060151
-Total Returns (%): 5.84
-Annualized Returns (%): 8.1
+Ending Value: 1104143
+Total Returns (%): 9.91
+Annualized Returns (%): 14.12
 Max Drawdown (%): 7.12
 
 --- Strategy Evaluation ---

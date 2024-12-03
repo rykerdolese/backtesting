@@ -31,6 +31,7 @@ Farama-Notifications==0.0.4
 filelock==3.16.1
 flatbuffers==24.3.25
 fonttools==4.51.0
+fredapi==0.5.2
 frozendict==2.4.4
 frozenlist==1.5.0
 fsspec==2024.10.0

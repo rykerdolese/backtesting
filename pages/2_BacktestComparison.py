@@ -24,7 +24,9 @@ llm = ChatOpenAI(temperature=0,
 
 
 # Page configuration
-st.set_page_config(page_title="Backtest Comparison", page_icon="📊")
+st.set_page_config(page_title="Backtest Comparison", 
+                   page_icon="📊",
+                   layout="wide")
 
 # Title and description
 st.title("Backtest Comparison Tool")

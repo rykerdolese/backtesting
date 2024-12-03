@@ -18,7 +18,9 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # Streamlit page configuration
-st.set_page_config(page_title="Model Training Page", page_icon="💡")
+st.set_page_config(page_title="Model Training Page", 
+                   page_icon="💡",
+                   layout="wide")
 
 # Page title
 st.title("AI Model Training Page")

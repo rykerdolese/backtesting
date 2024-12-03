@@ -18,6 +18,7 @@ import os
 st.set_page_config(
     page_title="Backtesting",
     page_icon="📈",
+    layout="wide"
 )
 
 # content only for backtesting page

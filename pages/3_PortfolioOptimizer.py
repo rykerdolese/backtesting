@@ -102,6 +102,11 @@ def optimize_portfolio(mean_returns, cov_matrix, risk_free_rate):
     return result.x
 
 
+# Page configuration
+st.set_page_config(page_title="Portfolio Optimization", 
+                   page_icon="📌",
+                   layout="wide")
+
 # Streamlit app
 st.title("Portfolio Optimization")
 st.sidebar.header("Portfolio Inputs")
